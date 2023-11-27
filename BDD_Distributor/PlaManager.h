@@ -20,5 +20,6 @@ public:
 	void loadFile(std::string path);
 	int32_t getLineCount();
 	void printLines();
+	void writeToFiles(std::string path, int fileCount); // writes multiple pla files into "PLA-Files/write" directory
 };
 

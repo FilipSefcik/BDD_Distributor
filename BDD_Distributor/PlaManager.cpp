@@ -163,3 +163,46 @@ void PlaManager::printLines()
         std::cout << line << std::endl;
     }
 }
+
+void PlaManager::writeToFiles(std::string path, int fileCount)
+{
+    if (fileCount <= 0 || fileCount > this->lineCount)
+    {
+        std::cout << "Illegal file count.\n";
+        return;
+    }
+
+    int fileNum = 0;
+    int lineNum = this->lineCount / fileCount;
+    int remainder = this->lineCount % fileCount;
+    int firstLine = 0;
+    do
+    {
+        std::ofstream file(path + "file" + std::to_string(fileNum) + ".pla");
+
+        if (!file.is_open()) {
+            std::cerr << "Error opening the file!" << std::endl;
+            return; // Return an error code
+        }
+
+        int writtenLines = fileNum == 0
+            ? lineNum + remainder
+            : lineNum;
+
+        file << ".i " << this->varCount << std::endl;
+        file << ".o " << this->fCount << std::endl;
+        file << ".p " << writtenLines << std::endl << std::endl;
+
+        for (int i = 0; i < writtenLines; i++)
+        {
+            file << this->lines.at(firstLine + i) << std::endl;
+        }
+
+        file << ".e" << std::endl;
+        file.close();
+
+        firstLine += writtenLines;
+        fileNum++;
+
+    } while (fileNum < fileCount);
+}
