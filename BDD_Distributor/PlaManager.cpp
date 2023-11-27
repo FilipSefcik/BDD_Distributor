@@ -8,7 +8,7 @@ PlaManager::PlaManager(std::string path)
 PlaManager::PlaManager(int32_t paVarCount, int32_t paFCount, int64_t paLineCount, std::vector<std::string> paLines)
     : varCount(paVarCount), fCount(paFCount), lineCount(paLineCount), lines(paLines) {}
 
-PlaManager::PlaManager(PlaManager& secondManager)
+PlaManager::PlaManager(const PlaManager& secondManager)
     : varCount(secondManager.varCount),
       fCount(secondManager.fCount),
       lineCount(secondManager.lineCount),

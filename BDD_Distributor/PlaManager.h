@@ -18,7 +18,7 @@ private:
 public:
 	PlaManager(std::string path);
 	PlaManager(int32_t paVarCount, int32_t paFCount, int64_t paLineCount, std::vector<std::string> paLines);
-	PlaManager(PlaManager& secondManager);
+	PlaManager(const PlaManager& secondManager);
 	void loadFile(std::string path);
 	int32_t getLineCount();
 	int32_t getVarCount();

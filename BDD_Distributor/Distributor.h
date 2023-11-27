@@ -1,5 +1,5 @@
 #pragma once
-#include "PlaManager.h"
+#include "Node.h"
 
 /**
 * @brief Manages whole proces of loading pla files and distributing them using MPI (not yet)
@@ -7,9 +7,13 @@
 class Distributor
 {
 private:
-	PlaManager* plaManager;
-
+	std::vector<Node*> nodes;
+	int nodeCount;
 public:
-
+	Distributor();
+	~Distributor();
+	void loadNodes(std::vector<PlaManager> smallManagers);
+	int evaluateNodes();
+	int getNodeCount();
 };
 
