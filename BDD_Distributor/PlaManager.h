@@ -17,9 +17,13 @@ private:
 	std::vector<std::string> lines;
 public:
 	PlaManager(std::string path);
+	PlaManager(int32_t paVarCount, int32_t paFCount, int64_t paLineCount, std::vector<std::string> paLines);
+	PlaManager(PlaManager& secondManager);
 	void loadFile(std::string path);
 	int32_t getLineCount();
+	int32_t getVarCount();
 	void printLines();
 	void writeToFiles(std::string path, int fileCount); // writes multiple pla files into "PLA-Files/write" directory
+	std::vector<PlaManager> divideToInstances(int instanceCount);
 };
 

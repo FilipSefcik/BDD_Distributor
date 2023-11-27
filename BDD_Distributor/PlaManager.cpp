@@ -5,6 +5,15 @@ PlaManager::PlaManager(std::string path)
 	this->loadFile(path);
 }
 
+PlaManager::PlaManager(int32_t paVarCount, int32_t paFCount, int64_t paLineCount, std::vector<std::string> paLines)
+    : varCount(paVarCount), fCount(paFCount), lineCount(paLineCount), lines(paLines) {}
+
+PlaManager::PlaManager(PlaManager& secondManager)
+    : varCount(secondManager.varCount),
+      fCount(secondManager.fCount),
+      lineCount(secondManager.lineCount),
+      lines(secondManager.lines) {}
+
 void PlaManager::loadFile(std::string path)
 {
     // Utils:
@@ -156,6 +165,11 @@ int32_t PlaManager::getLineCount()
     return this->lineCount;
 }
 
+int32_t PlaManager::getVarCount()
+{
+    return this->varCount;
+}
+
 void PlaManager::printLines()
 {
     for (std::string line : this->lines)
@@ -176,6 +190,7 @@ void PlaManager::writeToFiles(std::string path, int fileCount)
     int lineNum = this->lineCount / fileCount;
     int remainder = this->lineCount % fileCount;
     int firstLine = 0;
+
     do
     {
         std::ofstream file(path + "file" + std::to_string(fileNum) + ".pla");
@@ -205,4 +220,45 @@ void PlaManager::writeToFiles(std::string path, int fileCount)
         fileNum++;
 
     } while (fileNum < fileCount);
+}
+
+std::vector<PlaManager> PlaManager::divideToInstances(int instanceCount)
+{
+    std::vector<PlaManager> instances;
+
+    if (instanceCount <= 0 || instanceCount > this->lineCount)
+    {
+        std::cout << "Illegal instance count.\n";
+        return instances;
+    }
+
+    int instanceNum = 0;
+    int lineNum = this->lineCount / instanceCount;
+    int remainder = this->lineCount % instanceCount;
+    int firstLine = 0;
+    std::vector<std::string> newLines;
+    std::string line;
+
+    do
+    {
+        int writtenLines = instanceNum == 0
+            ? lineNum + remainder
+            : lineNum;
+
+        for (int i = 0; i < writtenLines; i++)
+        {
+            line = this->lines.at(firstLine + i);
+            newLines.emplace_back(line);
+        }
+
+        instances.push_back(PlaManager(this->varCount, this->fCount, writtenLines, newLines));
+        
+        newLines.clear();
+        firstLine += writtenLines;
+        instanceNum++;
+
+    } while (instanceNum < instanceCount);
+
+
+    return instances;
 }

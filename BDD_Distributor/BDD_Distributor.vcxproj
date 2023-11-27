@@ -129,10 +129,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Distributor.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="PlaManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Distributor.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="PlaManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

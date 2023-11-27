@@ -7,8 +7,19 @@ int main() {
 
 	std::cout << pla.getLineCount() << std::endl;
 	pla.printLines();
+	std::cout << std::endl;
 
-	pla.writeToFiles("PLA-Files/write/", 1);
+	//pla.writeToFiles("PLA-Files/write/", 2);
+
+	std::vector<PlaManager> smallManagers = pla.divideToInstances(2);
+
+	for (PlaManager manager : smallManagers)
+	{
+		std::cout << manager.getLineCount() << std::endl;
+		manager.printLines();
+		std::cout << std::endl;
+	}
+
 
 	return 0;
 }
