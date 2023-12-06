@@ -6,7 +6,7 @@
 int main() {
 	PlaManager pla("PLA-Files/load/simplePLA.pla");
 
-	//std::cout << "Function: F=(A+B)*C\n";
+	std::cout << "Function: F=(A+B)*C\n";
 	std::cout << "Start: \n";
 	std::cout << pla.getLineCount() << std::endl;
 	pla.printLines();
@@ -22,13 +22,13 @@ int main() {
 	for (PlaManager manager : smallManagers)
 	{
 		std::cout << manager.getLineCount() << std::endl;
-		//manager.printLines();
+		manager.printLines();
 		std::cout << std::endl;
 	}
 
 	distributor.loadNodes(smallManagers);
 
-	std::cout << "True density: \n";
+	std::cout << "Satisfy count: \n";
 	std::cout << distributor.evaluateNodes() << std::endl;
 
 
