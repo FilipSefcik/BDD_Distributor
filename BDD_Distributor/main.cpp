@@ -6,12 +6,13 @@
 int main() {
 	PlaManager pla("PLA-Files/load/simplePLA.pla");
 
+	//std::cout << "Function: F=(A+B)*C\n";
 	std::cout << "Start: \n";
 	std::cout << pla.getLineCount() << std::endl;
 	pla.printLines();
 	std::cout << std::endl;
 
-	//pla.writeToFiles("PLA-Files/write/", 2);
+	pla.writeToFiles("PLA-Files/write/", 2);
 
 	Distributor distributor;
 
@@ -21,7 +22,7 @@ int main() {
 	for (PlaManager manager : smallManagers)
 	{
 		std::cout << manager.getLineCount() << std::endl;
-		manager.printLines();
+		//manager.printLines();
 		std::cout << std::endl;
 	}
 

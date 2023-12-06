@@ -138,21 +138,6 @@ void PlaManager::loadFile(std::string path)
             break;
         }
 
-        //// Split on the first space.
-        //auto const varsLast = std::find_if(first, last, is_space);
-        //if (varsLast == last)
-        //{
-        //    return;
-        //}
-        //auto const fsFirst = std::find_if_not(varsLast + 1, last, is_space);
-        //auto const fsLast = std::find_if(fsFirst, last, is_space);
-        //auto const varsStr = std::string(first, varsLast);
-        //auto const fStr = std::string(fsFirst, fsLast);
-
-        //if (ssize(varsStr) != this->varCount || ssize(fStr) != this->fCount)
-        //{
-        //    return;
-        //}
 
         this->lines.push_back(line);
 

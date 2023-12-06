@@ -11,7 +11,7 @@ Node::Node(PlaManager PaPlaManager, int paNodeNum)
 Node::~Node()
 {
 	delete this->plaManager;
-	//delete this->bddManager; throws error
+	delete this->bddManager; //throws error
 }
 
 void Node::loadPla()
