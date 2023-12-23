@@ -89,12 +89,12 @@ void ModuleManager::loadModules(std::string confPath)
             int digits = 0;
             for (std::size_t i = 0; i < val.size(); ++i) {
                 if (val[i] == 'M') {
-                    std::cout << "Found 'M' at position: " << (i - digits) << std::endl;
-                    for (size_t j = i + 1; j < val.size() - i; j++)
+                    std::cout << "Real 'M' at position: " << (i - digits) << std::endl;
+                    for (size_t j = i + 1; j < val.size(); j++)
                     {
                         if (val[j] == 'V' || val[j] == 'M')
                         {
-                            i = j;
+                            i = j - 1;
                             break;
                         }
                         digits++;
