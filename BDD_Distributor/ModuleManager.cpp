@@ -87,9 +87,14 @@ void ModuleManager::loadModules(std::string confPath)
             auto val = std::string(valFirst, valLast);
 
             int digits = 0;
+            int position;
+            std::stringstream moduleName;
             for (std::size_t i = 0; i < val.size(); ++i) {
                 if (val[i] == 'M') {
-                    std::cout << "Real 'M' at position: " << (i - digits) << std::endl;
+                    moduleName.str("");
+                    moduleName << 'M';
+                    position = i - digits;
+
                     for (size_t j = i + 1; j < val.size(); j++)
                     {
                         if (val[j] == 'V' || val[j] == 'M')
@@ -97,27 +102,12 @@ void ModuleManager::loadModules(std::string confPath)
                             i = j - 1;
                             break;
                         }
+                        moduleName << val[j];
                         digits++;
                     }
+                    this->modules.at(key)->addSon(position, this->modules.at(moduleName.str()));
                 }
             }
-
-            //std::regex pattern("M\\d+");
-            //std::sregex_iterator iter(val.begin(), val.end(), pattern);
-            //std::sregex_iterator end;
-
-            //while (iter != end) {
-            //    // Access the match and extract the matched substring
-            //    std::string matchedSubstring = (*iter).str();
-            //    std::cout << "Matched substring: " << matchedSubstring << std::endl;
-            //    int position = (*iter).position() == 0 
-            //        ? 0
-            //        : (*iter).position() - matchedSubstring.size() + 1;
-            //    std::cout << "Match position: " << position << std::endl;
-
-            //    // Move to the next match
-            //    ++iter;
-            //}
         }
 
     } while (std::getline(file, line));
@@ -135,8 +125,11 @@ ModuleManager::~ModuleManager()
 
 void ModuleManager::printModules()
 {
+    if (this->modules.empty()) { return; }
+
     for (auto& pair : this->modules)
     {
-        std::cout << pair.second->gatName() << " " << pair.second->getPath() << "\n";
+        std::cout << pair.first << " " << pair.second->getPath() << "\n";
+        pair.second->printSons();
     }
 }

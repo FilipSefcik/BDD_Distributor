@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include <iostream>
+
 class Module
 {
 private:
@@ -13,5 +15,7 @@ public:
 	~Module();
 	std::string gatName() { return this->name; };
 	std::string getPath() { return this->path; };
+	void addSon(int position, Module* newSon);
+	void printSons();
 };
 
