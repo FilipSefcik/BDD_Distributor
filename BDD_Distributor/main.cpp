@@ -2,9 +2,10 @@
 #include <libteddy/core.hpp>
 #include "PlaManager.h"
 #include "Distributor.h"
+#include "ModuleManager.h"
 
 int main() {
-	PlaManager pla("PLA-Files/load/simplePLA.pla");
+	/*PlaManager pla("PLA-Files/load/simplePLA.pla");
 
 	std::cout << "Function: F=(A+B)*C\n";
 	std::cout << "Start: \n";
@@ -29,8 +30,11 @@ int main() {
 	distributor.loadNodes(smallManagers);
 
 	std::cout << "Satisfy count: \n";
-	std::cout << distributor.evaluateNodes() << std::endl;
+	std::cout << distributor.evaluateNodes() << std::endl;*/
 
+	ModuleManager moduleManager;
+	moduleManager.loadModules("Modules/module_map.conf");
+	moduleManager.printModules();
 
 	return 0;
 }

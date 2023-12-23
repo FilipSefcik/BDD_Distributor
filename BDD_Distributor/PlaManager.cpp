@@ -22,26 +22,6 @@ void PlaManager::loadFile(std::string path)
             return static_cast<bool>(std::isspace(character));
         };
 
-    auto constexpr to_words = [is_space](auto const str)
-        {
-            auto words = std::vector<std::string>();
-            auto strIt = begin(str);
-            auto const endIt = end(str);
-
-            while (strIt != endIt)
-            {
-                auto const wordBegin = std::find_if_not(strIt, endIt, is_space);
-                auto const wordEnd = std::find_if(wordBegin, endIt, is_space);
-                if (wordBegin != wordEnd)
-                {
-                    words.emplace_back(wordBegin, wordEnd);
-                }
-                strIt = wordEnd;
-            }
-
-            return words;
-        };
-
     auto ifst = std::ifstream(path);
 
     if (not ifst.is_open())
