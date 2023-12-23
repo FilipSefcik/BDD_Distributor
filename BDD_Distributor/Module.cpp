@@ -2,6 +2,7 @@
 
 Module::~Module()
 {
+    //not needed because it is the same pointer in class ModuleManager where it will be also deleted
     /*for (auto& pair : this->sons)
     {
         delete pair.second;
