@@ -18,6 +18,7 @@ void Module::addSon(int position, Module* newSon)
 
 void Module::printSons()
 {
+    std::cout << "Var count: " << this->varCount << std::endl;
     for (auto& pair : this->sons)
     {
         std::cout << pair.first << " " << pair.second->gatName() << std::endl;

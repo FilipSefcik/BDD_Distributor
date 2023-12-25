@@ -66,7 +66,7 @@ void ModuleManager::loadModules(std::string confPath)
         auto const first
             = std::find_if_not(std::begin(line), std::end(line), is_space);
         auto const last = std::end(line);
-        if (first == last)
+        if (first == last || *first == '#')
         {
             // Skip empty line.
             continue;
@@ -108,6 +108,7 @@ void ModuleManager::loadModules(std::string confPath)
                     this->modules.at(key)->addSon(position, this->modules.at(moduleName.str()));
                 }
             }
+            this->modules.at(key)->setVarCount(val.size() - digits);
         }
 
     } while (std::getline(file, line));

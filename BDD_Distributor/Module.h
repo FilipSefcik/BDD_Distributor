@@ -9,6 +9,7 @@ private:
 	std::string name;
 	std::string path;
 	std::unordered_map<int, Module*> sons;
+	int varCount = 0;
 public:
 	Module(std::string paName, std::string paPath)
 		: name(paName), path(paPath) {};
@@ -17,5 +18,6 @@ public:
 	std::string getPath() { return this->path; };
 	void addSon(int position, Module* newSon);
 	void printSons();
+	void setVarCount(int paVarCount) { this->varCount = paVarCount; }
 };
 
