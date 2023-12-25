@@ -142,6 +142,7 @@
     <ClInclude Include="ModuleManager.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="PlaManager.h" />
+    <ClInclude Include="Divider.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
