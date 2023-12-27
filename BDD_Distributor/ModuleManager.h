@@ -13,5 +13,6 @@ public:
 	void loadModules(std::string confPath);
 	~ModuleManager();
 	void printModules();
+	std::unordered_map<std::string, Module*>* getModules() { return &this->modules; };
 };
 

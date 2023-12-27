@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include "PlaManager.h"
 #include "libteddy/core.hpp"
 
@@ -12,12 +13,14 @@ private:
 	PlaManager* plaManager;
 	teddy::bdd_manager* bddManager;
 	diagram function;
-	int nodeNum;
+	int nodeIP;
+
 public:
-	Node(PlaManager PaPlaManager, int paNodeNum);
+	Node(PlaManager PaPlaManager, int paNodeIP);
 	~Node();
 	void loadPla();
 	void writePla();
 	int getTrueDensity();
+	int getIP() { return this->nodeIP; }
 };
 

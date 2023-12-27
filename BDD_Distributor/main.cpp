@@ -3,38 +3,48 @@
 #include "PlaManager.h"
 #include "Distributor.h"
 #include "ModuleManager.h"
+#include "Divider.h"
 
 int main() {
-	/*PlaManager pla("PLA-Files/load/simplePLA.pla");
+	PlaManager pla("PLA-Files/load/simplePLA.pla");
 
-	std::cout << "Function: F=(A+B)*C\n";
-	std::cout << "Start: \n";
-	std::cout << pla.getLineCount() << std::endl;
-	pla.printLines();
-	std::cout << std::endl;
+	std::vector<Node*> nodes;
 
-	pla.writeToFiles("PLA-Files/write/", 2);
-
-	Distributor distributor;
-
-	std::vector<PlaManager> smallManagers = pla.divideToInstances(distributor.getNodeCount());
-
-	std::cout << "Small managers: \n";
-	for (PlaManager manager : smallManagers)
+	for (int i = 0; i < 3; i++)
 	{
-		std::cout << manager.getLineCount() << std::endl;
-		manager.printLines();
-		std::cout << std::endl;
+		nodes.push_back(new Node(pla, i));
 	}
-
-	distributor.loadNodes(smallManagers);
-
-	std::cout << "Satisfy count: \n";
-	std::cout << distributor.evaluateNodes() << std::endl;*/
 
 	ModuleManager moduleManager;
 	moduleManager.loadModules("Modules/module_map.conf");
+	std::cout << "Loaded modules: \n";
 	moduleManager.printModules();
+	std::cout << "====================\n";
+
+	std::vector<NodeMap*>* nodeMaps = new std::vector<NodeMap*>();
+
+	NodeDivider divider;
+	divider.divideModules(moduleManager.getModules(), &nodes, nodeMaps);
+
+	std::cout << "Divided modules: \n";
+
+	for (int i = 0; i < nodeMaps->size(); i++)
+	{
+		std::cout << nodeMaps->at(i)->module->gatName() << " => " << nodeMaps->at(i)->node->getIP() << std::endl;
+	}
+
+
+	//deleting dynamic pointers
+
+	for (int i = 0; i < nodeMaps->size(); i++)
+	{
+		delete nodeMaps->at(i);
+	}
+
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		delete nodes.at(i);
+	}
 
 	return 0;
 }
