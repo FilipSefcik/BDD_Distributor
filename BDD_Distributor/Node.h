@@ -2,16 +2,17 @@
 #include <string>
 #include "PlaManager.h"
 #include "libteddy/core.hpp"
+#include "libteddy/reliability.hpp"
 
 /**
 *@brief Simulates function of a node would in MPI communication
 */
 class Node
 {
-	using diagram = teddy::bdd_manager::diagram_t;
+	using diagram = teddy::bss_manager::diagram_t;
 private:
 	PlaManager* plaManager;
-	teddy::bdd_manager* bddManager;
+	teddy::bss_manager* bssManager;
 	diagram function;
 	int nodeIP;
 
@@ -20,7 +21,7 @@ public:
 	~Node();
 	void loadPla();
 	void writePla();
-	int getTrueDensity();
+	double getTrueDensity();
 	int getIP() { return this->nodeIP; }
 };
 

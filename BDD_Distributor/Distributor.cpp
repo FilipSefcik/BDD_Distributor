@@ -23,9 +23,9 @@ void Distributor::loadNodes(std::vector<PlaManager> smallManagers)
 	}
 }
 
-int Distributor::evaluateNodes()
+double Distributor::evaluateNodes()
 {
-	int trueDensity = 0;
+	double trueDensity = 0;
 
 	for (Node* node : this->nodes)
 	{
