@@ -24,7 +24,7 @@ int main() {
 	std::vector<NodeMap*>* nodeMaps = new std::vector<NodeMap*>();
 
 	NodeDivider divider;
-	divider.divideModules(moduleManager.getModules(), &nodes, nodeMaps);
+	divider.divideModules(moduleManager.getModules(), &nodes, *nodeMaps);
 
 	std::cout << "Divided modules: \n";
 

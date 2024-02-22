@@ -14,7 +14,7 @@ class Divider
 protected:
     bool flag = false;
 public:
-    virtual void divideModules(std::unordered_map<std::string, Module*>* modules, std::vector<Node*>* nodes, std::vector<NodeMap*>*& nodeMaps) {
+    virtual void divideModules(std::unordered_map<std::string, Module*>* modules, std::vector<Node*>* nodes, std::vector<NodeMap*>& nodeMaps) {
         if (modules->empty())
         {
             std::cout << "There are no modules to divide.\n";
@@ -33,7 +33,7 @@ public:
 
 class NodeDivider : public Divider {
 public:
-    void divideModules(std::unordered_map<std::string, Module*>* modules, std::vector<Node*>* nodes, std::vector<NodeMap*>*& nodeMaps) override {
+    void divideModules(std::unordered_map<std::string, Module*>* modules, std::vector<Node*>* nodes, std::vector<NodeMap*>& nodeMaps) override {
         
         Divider::divideModules(modules, nodes, nodeMaps);
 
@@ -42,7 +42,7 @@ public:
         int nodeUsed = 0;              
 
         for (auto& pair : *modules) {
-            nodeMaps->push_back(new NodeMap{nodes->at(nodeUsed), pair.second});
+            nodeMaps.push_back(new NodeMap{nodes->at(nodeUsed), pair.second});
             nodeUsed = (nodeUsed + 1) % nodes->size();
         }
     }
