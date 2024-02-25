@@ -3,6 +3,7 @@
 #include "PlaManager.h"
 #include "libteddy/core.hpp"
 #include "libteddy/reliability.hpp"
+#include "Module.h"
 
 /**
 *@brief Simulates function of a node would in MPI communication
@@ -13,6 +14,7 @@ class Node
 private:
 	PlaManager* plaManager;
 	teddy::bss_manager* bssManager;
+	std::vector<Module*>* assignedModules;
 	diagram function;
 	int nodeIP;
 
@@ -22,6 +24,8 @@ public:
 	void loadPla();
 	void writePla();
 	double getTrueDensity();
+	void printModules();
 	int getIP() { return this->nodeIP; }
+	void assignModule(Module* paModule) { this->assignedModules->push_back(paModule); };
 };
 

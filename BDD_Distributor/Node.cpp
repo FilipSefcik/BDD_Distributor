@@ -5,6 +5,7 @@ Node::Node(PlaManager PaPlaManager, int paNodeNum)
 	this->nodeIP = paNodeNum;
 	this->plaManager = new PlaManager(PaPlaManager);
 	this->bssManager = new teddy::bss_manager(this->plaManager->getVarCount(), this->plaManager->getVarCount() * 1000);
+	this->assignedModules = new std::vector<Module*>();
 	//this->loadPla();
 }
 
@@ -12,6 +13,7 @@ Node::~Node()
 {
 	delete this->plaManager;
 	//delete this->bddManager; //throws error
+	delete this->assignedModules;
 }
 
 void Node::loadPla()
@@ -34,6 +36,17 @@ double Node::getTrueDensity()
 		});
 
 	return this->bssManager->calculate_availability(1, ps, this->function);
+}
+
+void Node::printModules()
+{
+	std::cout << "Node " << this->nodeIP << std::endl;
+	std::cout << "Assigned modules:";
+	for (Module* module : *this->assignedModules)
+	{
+		std::cout << " " << module->getName();
+	}
+	std::cout << std::endl;
 }
 
 

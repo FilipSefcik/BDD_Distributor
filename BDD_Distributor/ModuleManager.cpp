@@ -56,7 +56,7 @@ void ModuleManager::loadModules(std::string confPath)
             }
             auto val = std::string(valFirst, valLast);
             Module* mod = new Module(std::move(key), std::move(val));
-            this->modules.emplace(mod->gatName(), mod);
+            this->modules.emplace(mod->getName(), mod);
         }
     }
 

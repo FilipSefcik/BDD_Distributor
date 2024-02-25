@@ -17,7 +17,7 @@ public:
 	Module(std::string paName, std::string paPath) :
 		name(paName), path(paPath) {};
 	~Module();
-	std::string gatName() { return this->name; };
+	std::string getName() { return this->name; };
 	std::string getPath() { return this->path; };
 	double getReliability() { return this->reliability; };
 	int getPriority() { return this->priority; };

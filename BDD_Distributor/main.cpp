@@ -30,10 +30,15 @@ int main() {
 
 	std::cout << "Divided modules: \n";
 
-	for (int i = 0; i < nodeMaps->size(); i++)
+	for (int i = 0; i < nodes.size(); i++)
 	{
-		std::cout << nodeMaps->at(i)->module->gatName() << " => " << nodeMaps->at(i)->node->getIP() << std::endl;
+		nodes.at(i)->printModules();
 	}
+
+	/*for (int i = 0; i < nodeMaps->size(); i++)
+	{
+		std::cout << nodeMaps->at(i)->module->getName() << " => " << nodeMaps->at(i)->node->getIP() << std::endl;
+	}*/
 
 
 	//deleting dynamic pointers

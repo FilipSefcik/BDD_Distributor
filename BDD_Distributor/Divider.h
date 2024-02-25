@@ -42,7 +42,8 @@ public:
         int nodeUsed = 0;              
 
         for (auto& pair : *modules) {
-            nodeMaps.push_back(new NodeMap{nodes->at(nodeUsed), pair.second});
+            //nodeMaps.push_back(new NodeMap{nodes->at(nodeUsed), pair.second});
+            nodes->at(nodeUsed)->assignModule(pair.second);
             nodeUsed = (nodeUsed + 1) % nodes->size();
         }
     }
