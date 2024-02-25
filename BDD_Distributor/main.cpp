@@ -12,7 +12,7 @@ int main() {
 
 	std::vector<Node*> nodes;
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		nodes.push_back(new Node(pla, i));
 	}
