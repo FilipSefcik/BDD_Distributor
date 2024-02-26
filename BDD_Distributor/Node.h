@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
+#include "Module.h"
 #include "PlaManager.h"
 #include "libteddy/core.hpp"
 #include "libteddy/reliability.hpp"
-#include "Module.h"
 
 /**
 *@brief Simulates function of a node would in MPI communication

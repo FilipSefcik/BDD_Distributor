@@ -22,7 +22,7 @@ void Module::printSons()
 {
     std::cout << "Var count: " << this->varCount << std::endl;
     std::cout << "Priority: " << this->priority << std::endl;
-
+    
     for (auto& pair : this->sons)
     {
         std::cout << pair.first << " " << pair.second->getName() << std::endl;

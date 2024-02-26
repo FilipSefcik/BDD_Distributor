@@ -106,6 +106,7 @@ void ModuleManager::loadModules(std::string confPath)
                         digits++;
                     }
                     this->modules.at(key)->addSon(position, this->modules.at(moduleName.str()));
+                    this->modules.at(moduleName.str())->setPosition(position);
                 }
             }
             this->modules.at(key)->setVarCount(val.size() - digits);
@@ -121,7 +122,13 @@ ModuleManager::~ModuleManager()
         delete pair.second;
     }
 
+    for (int i = 0; i < this->separate_instructions.size(); i++)
+    {
+        delete this->separate_instructions.at(i);
+    }
+
     this->modules.clear();
+    this->separate_instructions.clear();
 }
 
 void ModuleManager::printModules()
@@ -131,6 +138,86 @@ void ModuleManager::printModules()
     for (auto& pair : this->modules)
     {
         std::cout << pair.first << " " << pair.second->getPath() << "\n";
+        std::cout << "My position: " << pair.second->getPosition() << "\n";
         pair.second->printSons();
+        std::cout << "\n";
+    }
+}
+
+void ModuleManager::getInstructions(std::vector<Node*>* nodes)
+{
+    std::vector<Module*> instructions;
+
+    this->separate_instructions.resize(nodes->size() > modules.size() ?
+                                        modules.size() : nodes->size());
+
+    for (auto& pair : this->modules)
+    {
+        instructions.push_back(pair.second);
+    }
+
+    std::sort(instructions.begin(), instructions.end(), [](Module* a, Module* b) { return a->getPriority() < b->getPriority(); });
+
+    std::cout << "Sorted:\n";
+
+    for (int i = 0; i < instructions.size(); i++)
+    {
+        std::cout << instructions.at(i)->getName() << " ";
+    }
+    std::cout << std::endl;
+
+    std::stringstream written_instructions;
+
+    for (int i = 0; i < instructions.size(); i++)
+    {
+        Module* mod = instructions.at(i);
+        Module* parent = mod->getParent();
+        if (!this->separate_instructions.at(mod->getNodeRank()))
+        {
+            this->separate_instructions.at(mod->getNodeRank()) = new std::stringstream;
+        }
+
+        written_instructions << "EXEC " << mod->getName() << "\n";
+        *this->separate_instructions.at(mod->getNodeRank()) << "EXEC " << mod->getName() << "\n"; 
+        if (parent)
+        {
+            if (!this->separate_instructions.at(parent->getNodeRank()))
+            {
+                this->separate_instructions.at(parent->getNodeRank()) = new std::stringstream;
+            }
+
+            written_instructions << "SEND " << parent->getNodeRank() << " " << mod->getPosition() << "\n";
+            *this->separate_instructions.at(mod->getNodeRank()) << "SEND " << parent->getNodeRank() << " " << mod->getPosition() << "\n";
+
+            written_instructions << "RECV " << parent->getName() << " " << mod->getNodeRank() << "\n";
+            *this->separate_instructions.at(parent->getNodeRank()) << "RECV " << parent->getName() << " " << mod->getNodeRank() << "\n";
+        }
+    }
+
+    std::cout << "Full instructions:\n";
+    std::cout << written_instructions.str() << std::endl;
+}
+
+void ModuleManager::printAssignedNodes()
+{
+    if (this->modules.empty()) { return; }
+
+    for (auto& pair : this->modules)
+    {
+        std::cout << pair.first << " " << pair.second->getNodeRank() << "\n";
+    }
+}
+
+bool ModuleManager::comparator(Module* a, Module* b)
+{
+    return a->getPriority() < b->getPriority();
+}
+
+void ModuleManager::printSeparateInstructions()
+{
+    for (int i = 0; i < this->separate_instructions.size(); i++)
+    {
+        std::cout << "Node " << i << " instructions:\n";
+        std::cout << this->separate_instructions.at(i)->str() << "\n";
     }
 }

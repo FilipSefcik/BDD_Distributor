@@ -35,6 +35,15 @@ int main() {
 		nodes.at(i)->printModules();
 	}
 
+	std::cout << "====================\n";
+	std::cout << "Assigned Nodes: \n";
+	moduleManager.printAssignedNodes();
+	std::cout << "====================\n";
+	moduleManager.getInstructions(&nodes);
+	std::cout << "====================\n";
+	std::cout << "Separate instructions: \n";
+	moduleManager.printSeparateInstructions();
+
 	/*for (int i = 0; i < nodeMaps->size(); i++)
 	{
 		std::cout << nodeMaps->at(i)->module->getName() << " => " << nodeMaps->at(i)->node->getIP() << std::endl;
