@@ -8,6 +8,7 @@ class Module
 private:
 	std::string name;
 	std::string path;
+	std::string pla_file;
 	std::unordered_map<int, Module*> sons;
 	Module* parent = nullptr;
 	int assignedNode;
@@ -33,5 +34,7 @@ public:
 	void printSons();
 	void setVarCount(int paVarCount) { this->varCount = paVarCount; }
 	void addPriority(int sonPriority);
+	void setPLA(std::string plaFileContent) { this->pla_file = plaFileContent; };
+	void printPLA();
 };
 

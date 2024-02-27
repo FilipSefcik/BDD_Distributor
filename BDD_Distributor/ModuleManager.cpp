@@ -221,3 +221,33 @@ void ModuleManager::printSeparateInstructions()
         std::cout << this->separate_instructions.at(i)->str() << "\n";
     }
 }
+
+void ModuleManager::prinModulePLA()
+{
+    for (auto& pair : this->modules)
+    {
+        std::cout << pair.second->getName() << std::endl;
+        pair.second->printPLA();
+    }
+}
+
+void ModuleManager::loadModulePLA()
+{
+    if (this->modules.empty()) { return; }
+
+    for (auto& pair : this->modules)
+    {
+        auto file = std::ifstream(pair.second->getPath());
+
+        if (file.is_open())
+        {
+            std::string file_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+            pair.second->setPLA(file_content);
+        }
+        
+        file.close();
+
+    }
+}
+
+

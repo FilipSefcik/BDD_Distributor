@@ -21,5 +21,7 @@ public:
 	void printAssignedNodes();
 	void printSeparateInstructions();
 	bool comparator(Module* a, Module* b);
+	void loadModulePLA();
+	void prinModulePLA();
 };
 

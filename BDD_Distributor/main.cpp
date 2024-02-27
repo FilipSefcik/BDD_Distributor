@@ -12,7 +12,7 @@ int main() {
 
 	std::vector<Node*> nodes;
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		nodes.push_back(new Node(pla, i));
 	}
@@ -22,6 +22,13 @@ int main() {
 	std::cout << "Loaded modules: \n";
 	moduleManager.printModules();
 	std::cout << "====================\n";
+
+	std::cout << "Loaded PLA: \n";
+	moduleManager.loadModulePLA();
+	moduleManager.prinModulePLA();
+
+	std::cout << "====================\n";
+
 
 	std::vector<NodeMap*>* nodeMaps = new std::vector<NodeMap*>();
 
@@ -33,6 +40,17 @@ int main() {
 	for (int i = 0; i < nodes.size(); i++)
 	{
 		nodes.at(i)->printModules();
+	}
+
+	std::vector<int> assignedCount;
+	assignedCount.resize(nodes.size());
+
+	std::cout << "Divided modules count: \n";
+
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		assignedCount.at(i) = nodes.at(i)->getModulesCount();
+		std::cout << i << " " << assignedCount.at(i) << std::endl;
 	}
 
 	std::cout << "====================\n";

@@ -40,3 +40,7 @@ void Module::addPriority(int sonPriority)
         }
     }
 }
+
+void Module::printPLA() {
+    std::cout << this->pla_file << std::endl;
+}

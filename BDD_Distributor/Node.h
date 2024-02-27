@@ -26,6 +26,7 @@ public:
 	double getTrueDensity();
 	void printModules();
 	int getIP() { return this->nodeIP; }
+	int getModulesCount() { return this->assignedModules->size(); };
 	void assignModule(Module* paModule) { this->assignedModules->push_back(paModule); };
 };
 
