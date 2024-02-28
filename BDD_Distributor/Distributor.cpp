@@ -2,7 +2,7 @@
 
 Distributor::Distributor()
 {
-    std::srand(std::time(0));
+    std::srand(144);
     this->nodeCount = /*(std::rand() % 5) + 1*/ 5;
 }
 

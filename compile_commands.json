@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/sefcik1/BP_projects/BDD_Distributor/build/BDD_Distributor",
+  "command": "/usr/bin/c++   -std=gnu++2a -o CMakeFiles/main.dir/main.cpp.o -c /home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/main.cpp",
+  "file": "/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/main.cpp"
+},
+{
+  "directory": "/home/sefcik1/BP_projects/BDD_Distributor/build/BDD_Distributor",
+  "command": "/usr/bin/c++   -std=gnu++2a -o CMakeFiles/main.dir/Distributor.cpp.o -c /home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/Distributor.cpp",
+  "file": "/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/Distributor.cpp"
+},
+{
+  "directory": "/home/sefcik1/BP_projects/BDD_Distributor/build/BDD_Distributor",
+  "command": "/usr/bin/c++   -std=gnu++2a -o CMakeFiles/main.dir/Module.cpp.o -c /home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/Module.cpp",
+  "file": "/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/Module.cpp"
+},
+{
+  "directory": "/home/sefcik1/BP_projects/BDD_Distributor/build/BDD_Distributor",
+  "command": "/usr/bin/c++   -std=gnu++2a -o CMakeFiles/main.dir/ModuleManager.cpp.o -c /home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/ModuleManager.cpp",
+  "file": "/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/ModuleManager.cpp"
+},
+{
+  "directory": "/home/sefcik1/BP_projects/BDD_Distributor/build/BDD_Distributor",
+  "command": "/usr/bin/c++   -std=gnu++2a -o CMakeFiles/main.dir/Node.cpp.o -c /home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/Node.cpp",
+  "file": "/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/Node.cpp"
+},
+{
+  "directory": "/home/sefcik1/BP_projects/BDD_Distributor/build/BDD_Distributor",
+  "command": "/usr/bin/c++   -std=gnu++2a -o CMakeFiles/main.dir/PlaManager.cpp.o -c /home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/PlaManager.cpp",
+  "file": "/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/PlaManager.cpp"
+}
+]
