@@ -1,31 +1,33 @@
 #include "Node.h"
 
-Node::Node(PlaManager PaPlaManager, int paNodeNum)
+Node::Node(int paNodeNum)
 {
 	this->nodeIP = paNodeNum;
-	this->plaManager = new PlaManager(PaPlaManager);
-	this->bssManager = new teddy::bss_manager(this->plaManager->getVarCount(), this->plaManager->getVarCount() * 1000);
 	this->assignedModules = new std::vector<Module*>();
-	//this->loadPla();
 }
 
 Node::~Node()
 {
-	delete this->plaManager;
-	//delete this->bddManager; //throws error
 	delete this->assignedModules;
 }
 
-void Node::loadPla()
+void Node::loadPla(std::string path)
 {
-	auto plaFile = teddy::pla_file::load_file("PLA-Files/node" + std::to_string(this->nodeIP) + "/file0.pla");
+	auto plaFile = teddy::pla_file::load_file(path);
 	this->function = this->bssManager->from_pla(*plaFile, teddy::fold_type::Left)[0];
 }
 
-void Node::writePla()
+void Node::writePla(std::string path, std::string content)
 {
-	this->plaManager->writeToFiles("PLA-Files/node" + std::to_string(this->nodeIP) + "/", 1);
+	std::ofstream file(this->nodeIP + "process/" + path);
+	if (!file.is_open()) {
+		std::cerr << "Error opening the file!" << std::endl;
+		return; // Return an error code
+	}
+	file << content;
+	file.close();
 }
+
 
 double Node::getTrueDensity()
 {

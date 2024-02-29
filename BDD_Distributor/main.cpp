@@ -8,13 +8,12 @@
 // added line to test main branch
 
 int main() {
-	PlaManager pla("PLA-Files/load/simplePLA.pla");
 
 	std::vector<Node*> nodes;
 
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 3; i++)
 	{
-		nodes.push_back(new Node(pla, i));
+		nodes.push_back(new Node(i));
 	}
 
 	ModuleManager moduleManager;

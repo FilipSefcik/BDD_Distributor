@@ -177,8 +177,10 @@ void ModuleManager::getInstructions(std::vector<Node*>* nodes)
             this->separate_instructions.at(mod->getNodeRank()) = new std::stringstream;
         }
 
-        written_instructions << "EXEC " << mod->getName() << "\n";
-        *this->separate_instructions.at(mod->getNodeRank()) << "EXEC " << mod->getName() << "\n"; 
+
+        // EXEC - module name - position of the module in parent
+        written_instructions << "EXEC " << mod->getName()  << " " << mod->getPosition() << "\n";
+        *this->separate_instructions.at(mod->getNodeRank()) << "EXEC " << mod->getName() << " " << mod->getPosition() << "\n";
         if (parent)
         {
             if (!this->separate_instructions.at(parent->getNodeRank()))
@@ -186,9 +188,13 @@ void ModuleManager::getInstructions(std::vector<Node*>* nodes)
                 this->separate_instructions.at(parent->getNodeRank()) = new std::stringstream;
             }
 
-            written_instructions << "SEND " << parent->getNodeRank() << " " << mod->getPosition() << "\n";
-            *this->separate_instructions.at(mod->getNodeRank()) << "SEND " << parent->getNodeRank() << " " << mod->getPosition() << "\n";
+            if (mod->getNodeRank() == parent->getNodeRank()) { continue;}
 
+            // SEND - position of module - rank of the process to send
+            written_instructions << "SEND " << parent->getNodeRank() << " " << mod->getPosition() << "\n";
+            *this->separate_instructions.at(mod->getNodeRank()) << "SEND " << mod->getPosition() << " " << parent->getNodeRank() << "\n";
+            
+            // RECV - parent module name - rank of the process recieved from
             written_instructions << "RECV " << parent->getName() << " " << mod->getNodeRank() << "\n";
             *this->separate_instructions.at(parent->getNodeRank()) << "RECV " << parent->getName() << " " << mod->getNodeRank() << "\n";
         }
@@ -228,6 +234,7 @@ void ModuleManager::prinModulePLA()
     {
         std::cout << pair.second->getName() << std::endl;
         pair.second->printPLA();
+        std::cout << std::endl;
     }
 }
 

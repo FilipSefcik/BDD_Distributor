@@ -19,7 +19,7 @@ void Distributor::loadNodes(std::vector<PlaManager> smallManagers)
 	for (int i = 0; i < smallManagers.size(); i++)
 	{
 		smallManagers.at(i).writeToFiles("PLA-Files/node" + std::to_string(i) + "/", 1);
-		this->nodes.push_back(new Node(smallManagers.at(i), i));
+		//this->nodes.push_back(new Node(smallManagers.at(i), i));
 	}
 }
 
