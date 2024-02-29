@@ -44,7 +44,7 @@ public:
         for (auto& pair : *modules) {
             //nodeMaps.push_back(new NodeMap{nodes->at(nodeUsed), pair.second});
             nodes->at(nodeUsed)->assignModule(pair.second);
-            pair.second->assignNode(nodes->at(nodeUsed)->getIP());
+            pair.second->assignNode(nodes->at(nodeUsed)->getRank());
             nodeUsed = (nodeUsed + 1) % nodes->size();
         }
     }

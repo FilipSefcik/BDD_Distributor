@@ -2,7 +2,7 @@
 
 Node::Node(int paNodeNum)
 {
-	this->nodeIP = paNodeNum;
+	this->node_rank = paNodeNum;
 	this->assignedModules = new std::vector<Module*>();
 }
 
@@ -19,7 +19,7 @@ void Node::loadPla(std::string path)
 
 void Node::writePla(std::string path, std::string content)
 {
-	std::ofstream file(this->nodeIP + "process/" + path);
+	std::ofstream file(this->node_rank + "process/" + path);
 	if (!file.is_open()) {
 		std::cerr << "Error opening the file!" << std::endl;
 		return; // Return an error code
@@ -29,26 +29,46 @@ void Node::writePla(std::string path, std::string content)
 }
 
 
-double Node::getTrueDensity()
+double Node::getTrueDensity(std::string moduleName)
 {
-	std::vector<std::array<double, 2>> ps ({
-		{0.5, 0.5}, // A 50% - 0, 50% - 1 
-		{0.5, 0.5}, // B 50% - 0, 50% - 1
-		{0.25, 0.75} // C 25% - 0, 75% - 1
-		});
+	Module* module = this->findModule(moduleName);
 
-	return this->bssManager->calculate_availability(1, ps, this->function);
+	if (!module)
+	{
+		std::cout << "Can't find module.";
+		return 0.0;
+	}
+
+	return this->bssManager->calculate_availability(1, *module->getSonsReliability(), this->function);
 }
 
 void Node::printModules()
 {
-	std::cout << "Node " << this->nodeIP << std::endl;
+	std::cout << "Node " << this->node_rank << std::endl;
 	std::cout << "Assigned modules:";
 	for (Module* module : *this->assignedModules)
 	{
 		std::cout << " " << module->getName();
 	}
 	std::cout << std::endl;
+}
+
+Module* Node::findModule(std::string moduleName)
+{
+	if (!this->assignedModules || this->assignedModules->empty())
+	{
+		return nullptr;
+	}
+
+	for (int i = 0; i < this->assignedModules->size(); i++)
+	{
+		if (this->assignedModules->at(i)->getName() == moduleName)
+		{
+			return this->assignedModules->at(i);
+		}
+	}
+
+	return nullptr;
 }
 
 

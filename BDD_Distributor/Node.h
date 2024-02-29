@@ -15,17 +15,20 @@ private:
 	teddy::bss_manager* bssManager;
 	std::vector<Module*>* assignedModules;
 	diagram function;
-	int nodeIP;
+	int node_rank;
 
 public:
 	Node(int paNodeNum);
 	~Node();
+	int getRank() { return this->node_rank; }
+	int getModulesCount() { return this->assignedModules->size(); };
+	double getTrueDensity(std::string moduleName);
+
 	void loadPla(std::string path);
 	void writePla(std::string path, std::string content);
-	double getTrueDensity();
 	void printModules();
-	int getIP() { return this->nodeIP; }
-	int getModulesCount() { return this->assignedModules->size(); };
 	void assignModule(Module* paModule) { this->assignedModules->push_back(paModule); };
+	Module* findModule(std::string moduleName);
+
 };
 

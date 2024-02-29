@@ -29,7 +29,7 @@ double Distributor::evaluateNodes()
 
 	for (Node* node : this->nodes)
 	{
-		trueDensity += node->getTrueDensity();
+		trueDensity += node->getTrueDensity("not used");
 	}
 
 	return trueDensity;
