@@ -146,10 +146,10 @@ void ModuleManager::printModules()
     }
 }
 
-void ModuleManager::getInstructions(std::vector<Node*>* nodes)
+void ModuleManager::getInstructions(int nodesCount)
 {
-    this->separate_instructions.resize(nodes->size() > modules.size() ?
-                                        modules.size() : nodes->size());
+    this->separate_instructions.resize(nodesCount > modules.size() ?
+                                        modules.size() : nodesCount);
 
     std::sort(this->vector_modules.begin(), this->vector_modules.end(), [](Module* a, Module* b) { return a->getPriority() < b->getPriority(); });
 

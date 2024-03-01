@@ -7,6 +7,7 @@
 #include <vector>
 #include "Divider.h"
 #include "Module.h"
+
 class ModuleManager
 {
 private:
@@ -17,7 +18,7 @@ public:
 	~ModuleManager();
 	
 	std::unordered_map<std::string, Module*>* getModules() { return &this->modules; };
-	void getInstructions(std::vector<Node*>* nodes);
+	void getInstructions(int nodesCount);
 
 	void loadModules(std::string confPath);
 	void loadPLA();

@@ -1,11 +1,7 @@
 #include <iostream>
 #include <libteddy/core.hpp>
-//#include "PlaManager.h"
-//#include "Distributor.h" // not used since 18.2. 14:35
 #include "ModuleManager.h"
 #include "Divider.h"
-
-// added line to test main branch
 
 int main() {
 
@@ -53,16 +49,10 @@ int main() {
 	std::cout << "Assigned Nodes: \n";
 	moduleManager.printAssignedNodes();
 	std::cout << "====================\n";
-	moduleManager.getInstructions(&nodes);
+	moduleManager.getInstructions(nodes.size());
 	std::cout << "====================\n";
 	std::cout << "Separate instructions: \n";
 	moduleManager.printSeparateInstructions();
-
-	/*for (int i = 0; i < nodeMaps->size(); i++)
-	{
-		std::cout << nodeMaps->at(i)->module->getName() << " => " << nodeMaps->at(i)->node->getIP() << std::endl;
-	}*/
-
 
 	//deleting dynamic pointers
 
