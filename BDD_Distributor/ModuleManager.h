@@ -11,17 +11,20 @@ class ModuleManager
 {
 private:
 	std::unordered_map<std::string, Module*> modules;
+	std::vector<Module*> vector_modules;
 	std::vector<std::stringstream*> separate_instructions;
 public:
-	void loadModules(std::string confPath);
 	~ModuleManager();
-	void printModules();
+	
 	std::unordered_map<std::string, Module*>* getModules() { return &this->modules; };
 	void getInstructions(std::vector<Node*>* nodes);
+
+	void loadModules(std::string confPath);
+	void loadPLA();
+
+	void printModules();
+	void prinModulePLA();
 	void printAssignedNodes();
 	void printSeparateInstructions();
-	bool comparator(Module* a, Module* b);
-	void loadModulePLA();
-	void prinModulePLA();
 };
 

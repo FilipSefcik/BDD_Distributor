@@ -33,12 +33,14 @@ public:
 	void setPosition(int paPosition) { this->position = paPosition; };
 	void setParent(Module* paParent) { this->parent = paParent; };
 	void assignNode(int paNode) { this->assignedNode = paNode; };
-	void addSon(int position, Module* newSon);
-	void printSons();
-	void setVarCount(int paVarCount);
-	void addPriority(int sonPriority);
 	void setPLA(std::string plaFileContent) { this->pla_file = plaFileContent; };
 
+	void addSon(int position, Module* newSon);
+	void setVarCount(int paVarCount);
+	void addPriority(int sonPriority);
+
+
 	void printPLA();
+	void printSons();
 };
 

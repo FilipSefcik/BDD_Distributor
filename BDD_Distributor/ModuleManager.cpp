@@ -58,6 +58,7 @@ void ModuleManager::loadModules(std::string confPath)
             Module* mod = new Module(std::move(key));
             mod->setPath(std::move(val));
             this->modules.emplace(mod->getName(), mod);
+            this->vector_modules.push_back(mod);
         }
     }
 
@@ -147,40 +148,21 @@ void ModuleManager::printModules()
 
 void ModuleManager::getInstructions(std::vector<Node*>* nodes)
 {
-    std::vector<Module*> instructions;
-
     this->separate_instructions.resize(nodes->size() > modules.size() ?
                                         modules.size() : nodes->size());
 
-    for (auto& pair : this->modules)
+    std::sort(this->vector_modules.begin(), this->vector_modules.end(), [](Module* a, Module* b) { return a->getPriority() < b->getPriority(); });
+
+    for (int i = 0; i < this->vector_modules.size(); i++)
     {
-        instructions.push_back(pair.second);
-    }
-
-    std::sort(instructions.begin(), instructions.end(), [](Module* a, Module* b) { return a->getPriority() < b->getPriority(); });
-
-    std::cout << "Sorted:\n";
-
-    for (int i = 0; i < instructions.size(); i++)
-    {
-        std::cout << instructions.at(i)->getName() << " ";
-    }
-    std::cout << std::endl;
-
-    std::stringstream written_instructions;
-
-    for (int i = 0; i < instructions.size(); i++)
-    {
-        Module* mod = instructions.at(i);
+        Module* mod = this->vector_modules.at(i);
         Module* parent = mod->getParent();
         if (!this->separate_instructions.at(mod->getNodeRank()))
         {
             this->separate_instructions.at(mod->getNodeRank()) = new std::stringstream;
         }
 
-
         // EXEC - module name - position of the module in parent
-        written_instructions << "EXEC " << mod->getName()  << " " << mod->getPosition() << "\n";
         *this->separate_instructions.at(mod->getNodeRank()) << "EXEC " << mod->getName() << " " << mod->getPosition() << "\n";
         if (parent)
         {
@@ -192,17 +174,17 @@ void ModuleManager::getInstructions(std::vector<Node*>* nodes)
             if (mod->getNodeRank() == parent->getNodeRank()) { continue;}
 
             // SEND - position of module - rank of the process to send
-            written_instructions << "SEND " << parent->getNodeRank() << " " << mod->getPosition() << "\n";
             *this->separate_instructions.at(mod->getNodeRank()) << "SEND " << mod->getPosition() << " " << parent->getNodeRank() << "\n";
             
             // RECV - parent module name - rank of the process recieved from
-            written_instructions << "RECV " << parent->getName() << " " << mod->getNodeRank() << "\n";
             *this->separate_instructions.at(parent->getNodeRank()) << "RECV " << parent->getName() << " " << mod->getNodeRank() << "\n";
         }
+        else
+        {
+            // END - module which gives answer
+            *this->separate_instructions.at(mod->getNodeRank()) << "END " << mod->getName() << "\n";
+        }
     }
-
-    std::cout << "Full instructions:\n";
-    std::cout << written_instructions.str() << std::endl;
 }
 
 void ModuleManager::printAssignedNodes()
@@ -213,11 +195,6 @@ void ModuleManager::printAssignedNodes()
     {
         std::cout << pair.first << " " << pair.second->getNodeRank() << "\n";
     }
-}
-
-bool ModuleManager::comparator(Module* a, Module* b)
-{
-    return a->getPriority() < b->getPriority();
 }
 
 void ModuleManager::printSeparateInstructions()
@@ -239,7 +216,7 @@ void ModuleManager::prinModulePLA()
     }
 }
 
-void ModuleManager::loadModulePLA()
+void ModuleManager::loadPLA()
 {
     if (this->modules.empty()) { return; }
 

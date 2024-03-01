@@ -11,7 +11,7 @@ int main() {
 
 	std::vector<Node*> nodes;
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		nodes.push_back(new Node(i));
 	}
@@ -23,16 +23,13 @@ int main() {
 	std::cout << "====================\n";
 
 	std::cout << "Loaded PLA: \n";
-	moduleManager.loadModulePLA();
+	moduleManager.loadPLA();
 	moduleManager.prinModulePLA();
 
 	std::cout << "====================\n";
 
-
-	std::vector<NodeMap*>* nodeMaps = new std::vector<NodeMap*>();
-
 	NodeDivider divider;
-	divider.divideModules(moduleManager.getModules(), &nodes, *nodeMaps);
+	divider.divideModules(moduleManager.getModules(), &nodes);
 
 	std::cout << "Divided modules: \n";
 
@@ -68,11 +65,6 @@ int main() {
 
 
 	//deleting dynamic pointers
-
-	for (int i = 0; i < nodeMaps->size(); i++)
-	{
-		delete nodeMaps->at(i);
-	}
 
 	for (int i = 0; i < nodes.size(); i++)
 	{
