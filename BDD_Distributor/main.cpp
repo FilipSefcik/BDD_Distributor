@@ -7,7 +7,7 @@ int main() {
 
 	std::vector<Node*> nodes;
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		nodes.push_back(new Node(i));
 	}

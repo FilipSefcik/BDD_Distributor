@@ -12,7 +12,7 @@ private:
 	std::vector<std::vector<double>>* sons_reliability;
 	Module* parent = nullptr;
 	int assignedNode;
-	int position;
+	int position = 0;
 	int priority = 0; // number of modules between the furthest "child" module and this module
 	int varCount = 0;
 	double my_reliability = 0.0;
