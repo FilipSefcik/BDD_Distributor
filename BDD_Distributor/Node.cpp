@@ -1,39 +1,74 @@
 #include "Node.h"
 
-Node::Node(PlaManager PaPlaManager, int paNodeNum)
+Node::Node(int paNodeNum)
 {
-	this->nodeIP = paNodeNum;
-	this->plaManager = new PlaManager(PaPlaManager);
-	this->bssManager = new teddy::bss_manager(this->plaManager->getVarCount(), this->plaManager->getVarCount() * 1000);
-	//this->loadPla();
+	this->node_rank = paNodeNum;
+	this->assignedModules = new std::vector<Module*>();
 }
 
 Node::~Node()
 {
-	delete this->plaManager;
-	//delete this->bddManager; //throws error
+	delete this->assignedModules;
 }
 
-void Node::loadPla()
+void Node::loadPla(std::string path)
 {
-	auto plaFile = teddy::pla_file::load_file("PLA-Files/node" + std::to_string(this->nodeIP) + "/file0.pla");
-	this->function = this->bssManager->from_pla(*plaFile, teddy::fold_type::Left)[0];
+	//auto plaFile = teddy::pla_file::load_file(path);
+	//this->function = this->bssManager->from_pla(*plaFile, teddy::fold_type::Left)[0];
 }
 
-void Node::writePla()
+void Node::writePla(std::string path, std::string content)
 {
-	this->plaManager->writeToFiles("PLA-Files/node" + std::to_string(this->nodeIP) + "/", 1);
+	std::ofstream file(std::to_string(this->node_rank) + "process/" + path);
+	if (!file.is_open()) {
+		std::cerr << "Error opening the file!" << std::endl;
+		return; // Return an error code
+	}
+	file << content;
+	file.close();
 }
 
-double Node::getTrueDensity()
-{
-	std::vector<std::array<double, 2>> ps ({
-		{0.5, 0.5}, // A 50% - 0, 50% - 1 
-		{0.5, 0.5}, // B 50% - 0, 50% - 1
-		{0.25, 0.75} // C 25% - 0, 75% - 1
-		});
 
-	return this->bssManager->calculate_availability(1, ps, this->function);
+double Node::getTrueDensity(std::string moduleName)
+{
+	Module* module = this->findModule(moduleName);
+
+	if (!module)
+	{
+		std::cout << "Can't find module.";
+		return 0.0;
+	}
+	return 0.0;
+	//return this->bssManager->calculate_availability(1, *module->getSonsReliability(), this->function);
+}
+
+void Node::printModules()
+{
+	std::cout << "Node " << this->node_rank << std::endl;
+	std::cout << "Assigned modules:";
+	for (Module* module : *this->assignedModules)
+	{
+		std::cout << " " << module->getName();
+	}
+	std::cout << std::endl;
+}
+
+Module* Node::findModule(std::string moduleName)
+{
+	if (!this->assignedModules || this->assignedModules->empty())
+	{
+		return nullptr;
+	}
+
+	for (int i = 0; i < this->assignedModules->size(); i++)
+	{
+		if (this->assignedModules->at(i)->getName() == moduleName)
+		{
+			return this->assignedModules->at(i);
+		}
+	}
+
+	return nullptr;
 }
 
 

@@ -3,18 +3,12 @@
 #include "Node.h"
 #include <iostream>
 
-struct NodeMap
-{
-    Node* node;
-    Module* module;
-};
-
 class Divider
 {
 protected:
     bool flag = false;
 public:
-    virtual void divideModules(std::unordered_map<std::string, Module*>* modules, std::vector<Node*>* nodes, std::vector<NodeMap*>& nodeMaps) {
+    virtual void divideModules(std::unordered_map<std::string, Module*>* modules, std::vector<Node*>* nodes) {
         if (modules->empty())
         {
             std::cout << "There are no modules to divide.\n";
@@ -33,16 +27,17 @@ public:
 
 class NodeDivider : public Divider {
 public:
-    void divideModules(std::unordered_map<std::string, Module*>* modules, std::vector<Node*>* nodes, std::vector<NodeMap*>& nodeMaps) override {
+    void divideModules(std::unordered_map<std::string, Module*>* modules, std::vector<Node*>* nodes) override {
         
-        Divider::divideModules(modules, nodes, nodeMaps);
+        Divider::divideModules(modules, nodes);
 
         if (this->flag) { return; }
 
         int nodeUsed = 0;              
 
         for (auto& pair : *modules) {
-            nodeMaps.push_back(new NodeMap{nodes->at(nodeUsed), pair.second});
+            nodes->at(nodeUsed)->assignModule(pair.second);
+            pair.second->assignNode(nodes->at(nodeUsed)->getRank());
             nodeUsed = (nodeUsed + 1) % nodes->size();
         }
     }

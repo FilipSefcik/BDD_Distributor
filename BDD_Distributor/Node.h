@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
-#include "PlaManager.h"
-#include "libteddy/core.hpp"
-#include "libteddy/reliability.hpp"
+#include <vector>
+#include <fstream>
+#include "Module.h"
+#include <libteddy/reliability.hpp>
 
 /**
 *@brief Simulates function of a node would in MPI communication
@@ -11,17 +12,23 @@ class Node
 {
 	using diagram = teddy::bss_manager::diagram_t;
 private:
-	PlaManager* plaManager;
 	teddy::bss_manager* bssManager;
+	std::vector<Module*>* assignedModules;
 	diagram function;
-	int nodeIP;
+	int node_rank;
 
 public:
-	Node(PlaManager PaPlaManager, int paNodeIP);
+	Node(int paNodeNum);
 	~Node();
-	void loadPla();
-	void writePla();
-	double getTrueDensity();
-	int getIP() { return this->nodeIP; }
+	int getRank() { return this->node_rank; }
+	int getModulesCount() { return this->assignedModules->size(); };
+	double getTrueDensity(std::string moduleName);
+
+	void loadPla(std::string path);
+	void writePla(std::string path, std::string content);
+	void printModules();
+	void assignModule(Module* paModule) { this->assignedModules->push_back(paModule); };
+	Module* findModule(std::string moduleName);
+
 };
 

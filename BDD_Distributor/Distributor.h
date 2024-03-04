@@ -12,7 +12,7 @@ private:
 public:
 	Distributor();
 	~Distributor();
-	void loadNodes(std::vector<PlaManager> smallManagers);
+	//void loadNodes(std::vector<PlaManager> smallManagers);
 	double evaluateNodes();
 	int getNodeCount();
 };

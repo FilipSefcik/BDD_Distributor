@@ -55,8 +55,10 @@ void ModuleManager::loadModules(std::string confPath)
                 --valLast;
             }
             auto val = std::string(valFirst, valLast);
-            Module* mod = new Module(std::move(key), std::move(val));
-            this->modules.emplace(mod->gatName(), mod);
+            Module* mod = new Module(std::move(key));
+            mod->setPath(std::move(val));
+            this->modules.emplace(mod->getName(), mod);
+            this->vector_modules.push_back(mod);
         }
     }
 
@@ -106,6 +108,7 @@ void ModuleManager::loadModules(std::string confPath)
                         digits++;
                     }
                     this->modules.at(key)->addSon(position, this->modules.at(moduleName.str()));
+                    this->modules.at(moduleName.str())->setPosition(position);
                 }
             }
             this->modules.at(key)->setVarCount(val.size() - digits);
@@ -121,7 +124,13 @@ ModuleManager::~ModuleManager()
         delete pair.second;
     }
 
+    for (int i = 0; i < this->separate_instructions.size(); i++)
+    {
+        delete this->separate_instructions.at(i);
+    }
+
     this->modules.clear();
+    this->separate_instructions.clear();
 }
 
 void ModuleManager::printModules()
@@ -131,6 +140,99 @@ void ModuleManager::printModules()
     for (auto& pair : this->modules)
     {
         std::cout << pair.first << " " << pair.second->getPath() << "\n";
+        std::cout << "My position: " << pair.second->getPosition() << "\n";
         pair.second->printSons();
+        std::cout << "\n";
     }
 }
+
+void ModuleManager::getInstructions(int nodesCount)
+{
+    this->separate_instructions.resize(nodesCount > modules.size() ?
+                                        modules.size() : nodesCount);
+
+    std::sort(this->vector_modules.begin(), this->vector_modules.end(), [](Module* a, Module* b) { return a->getPriority() < b->getPriority(); });
+
+    for (int i = 0; i < this->vector_modules.size(); i++)
+    {
+        Module* mod = this->vector_modules.at(i);
+        Module* parent = mod->getParent();
+        if (!this->separate_instructions.at(mod->getNodeRank()))
+        {
+            this->separate_instructions.at(mod->getNodeRank()) = new std::stringstream;
+        }
+
+        // EXEC - module name - position of the module in parent
+        *this->separate_instructions.at(mod->getNodeRank()) << "EXEC " << mod->getName() << " " << mod->getPosition() << "\n";
+        if (parent)
+        {
+            if (!this->separate_instructions.at(parent->getNodeRank()))
+            {
+                this->separate_instructions.at(parent->getNodeRank()) = new std::stringstream;
+            }
+
+            if (mod->getNodeRank() == parent->getNodeRank()) { continue;}
+
+            // SEND - position of module - rank of the process to send
+            *this->separate_instructions.at(mod->getNodeRank()) << "SEND " << mod->getPosition() << " " << parent->getNodeRank() << "\n";
+            
+            // RECV - parent module name - rank of the process recieved from
+            *this->separate_instructions.at(parent->getNodeRank()) << "RECV " << parent->getName() << " " << mod->getNodeRank() << "\n";
+        }
+        else
+        {
+            // END - module which gives answer
+            *this->separate_instructions.at(mod->getNodeRank()) << "END " << mod->getName() << "\n";
+        }
+    }
+}
+
+void ModuleManager::printAssignedNodes()
+{
+    if (this->modules.empty()) { return; }
+
+    for (auto& pair : this->modules)
+    {
+        std::cout << pair.first << " " << pair.second->getNodeRank() << "\n";
+    }
+}
+
+void ModuleManager::printSeparateInstructions()
+{
+    for (int i = 0; i < this->separate_instructions.size(); i++)
+    {
+        std::cout << "Node " << i << " instructions:\n";
+        std::cout << this->separate_instructions.at(i)->str() << "\n";
+    }
+}
+
+void ModuleManager::prinModulePLA()
+{
+    for (auto& pair : this->modules)
+    {
+        std::cout << pair.second->getName() << std::endl;
+        pair.second->printPLA();
+        std::cout << std::endl;
+    }
+}
+
+void ModuleManager::loadPLA()
+{
+    if (this->modules.empty()) { return; }
+
+    for (auto& pair : this->modules)
+    {
+        auto file = std::ifstream(pair.second->getPath());
+
+        if (file.is_open())
+        {
+            std::string file_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+            pair.second->setPLA(file_content);
+        }
+        
+        file.close();
+
+    }
+}
+
+
