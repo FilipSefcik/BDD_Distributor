@@ -24,11 +24,13 @@ public:
 	int getModulesCount() { return this->assignedModules->size(); };
 	double getTrueDensity(std::string moduleName);
 
+	Module* findModule(std::string moduleName);
+	Module* getModule(int index);
+
 	void loadPla(std::string path);
 	void writePla(std::string path, std::string content);
 	void printModules();
 	void assignModule(Module* paModule) { this->assignedModules->push_back(paModule); };
-	Module* findModule(std::string moduleName);
 
 };
 

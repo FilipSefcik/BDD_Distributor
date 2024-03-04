@@ -71,4 +71,12 @@ Module* Node::findModule(std::string moduleName)
 	return nullptr;
 }
 
+Module* Node::getModule(int index)
+{
+	return index >= 0 && 
+		   index < this->assignedModules->size() ?
+		   this->assignedModules->at(index) :
+		   nullptr;
+}
+
 

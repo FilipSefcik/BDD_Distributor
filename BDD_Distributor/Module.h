@@ -22,6 +22,7 @@ public:
 
 	std::string getName() { return this->name; };
 	std::string getPath() { return this->path; };
+	std::string getPLA() { return this->pla_file; };
 	double getReliability() { return this->my_reliability; };
 	std::vector<std::vector<double>>* getSonsReliability() { return this->sons_reliability; };
 	int getPriority() { return this->priority; };
