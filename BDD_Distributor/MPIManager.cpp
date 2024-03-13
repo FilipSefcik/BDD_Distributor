@@ -13,16 +13,20 @@ void MPIManager::executeModule(std::string module_name, int module_position) {
     Module* mod = this->my_modules.at(module_name);
     if (mod) {
         mod->setPosition(module_position);
-        double reliability = 0.0;
+        //double reliability = 0.0;
 
-        
         //teddy - moze to byt aj v triede modul napr.
-        // std::string const& cesta = mod->getPath();
-        // teddy::bss_manager bssManager(mod->getVarCount(), 1'000);
-        // auto plaSubor = teddy::pla_file::load_file(cesta);
-        // teddy::bss_manager::diagram_t f = bssManager.from_pla(*plaSubor, teddy::fold_type::Left)[0];
-        // const double reliability = bssManager.calculate_availability(1, *mod->getSonsReliability(), f);
+
+        // ERROR !!!!!!!!!
+
+        std::string const& cesta = mod->getPath();
+        teddy::bss_manager bssManager(mod->getVarCount(), 1'000);
+        auto plaSubor = teddy::pla_file::load_file(cesta);
+        teddy::bss_manager::diagram_t f = bssManager.from_pla(*plaSubor, teddy::fold_type::Left)[0];
+        const double reliability = bssManager.calculate_availability(1, *mod->getSonsReliability(), f);
         
+        // ERROR !!!!!!!!!
+
         mod->setReliability(reliability);
         std::cout << "Module " << mod->getName() << " reliability is " << reliability << " with position " << mod->getPosition() << std::endl;
     } else {

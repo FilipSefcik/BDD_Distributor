@@ -1,11 +1,9 @@
 add_executable(
     main
         main.cpp
-        Distributor.cpp
         Module.cpp
         ModuleManager.cpp
         Node.cpp
-        PlaManager.cpp
         MPIManager.cpp
 )
 
