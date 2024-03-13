@@ -19,6 +19,7 @@ public:
 	
 	std::unordered_map<std::string, Module*>* getModules() { return &this->modules; };
 	void getInstructions(int nodesCount);
+    std::string getInstructionFor(int node_rank);
 
 	void loadModules(std::string confPath);
 	void loadPLA();

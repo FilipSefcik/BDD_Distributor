@@ -50,3 +50,32 @@ void Module::setVarCount(int paVarCount) {
         this->sons_reliability->push_back({0.5, 0.5});
     }
 }
+
+void Module::setSonsReliability(int sonPosition, double sonRel) {
+    if (sonPosition >= 0 && sonPosition < this->sons_reliability->size()) {
+        this->sons_reliability->at(sonPosition) = {1.0 - sonRel, sonRel};
+    }
+}
+
+void Module::writePLAFile() {
+
+    std::filesystem::path directoryPath = std::filesystem::path(this->path).parent_path();
+
+    if (!std::filesystem::exists(directoryPath)) {
+        if (!std::filesystem::create_directories(directoryPath)) {
+            std::cerr << "Error creating directories!" << std::endl;
+            return; // Return an error code
+        }
+    }
+
+    std::ofstream outputFile(this->path);
+
+    if (!outputFile.is_open()) {
+        std::cerr << "Error opening the file!" << std::endl;
+        return; 
+    }
+
+    outputFile << this->pla_file << std::endl;
+
+    outputFile.close();
+}

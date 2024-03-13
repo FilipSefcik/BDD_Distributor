@@ -71,4 +71,17 @@ Module* Node::findModule(std::string moduleName)
 	return nullptr;
 }
 
+Module* Node::getModule(int index)
+{
+	return index >= 0 && 
+		   index < this->assignedModules->size() ?
+		   this->assignedModules->at(index) :
+		   nullptr;
+}
 
+std::string Node::getString(int index) {
+    std::stringstream string;
+    Module* mod = this->getModule(index);
+    string << mod->getName() << "\n" << mod->getPLA() << std::endl;
+    return string.str();
+}

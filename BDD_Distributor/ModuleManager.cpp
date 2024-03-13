@@ -11,6 +11,7 @@ void ModuleManager::loadModules(std::string confPath)
 
     if (not file.is_open())
     {
+        printf("not file open error \n");
         return;
     }
 
@@ -171,13 +172,16 @@ void ModuleManager::getInstructions(int nodesCount)
                 this->separate_instructions.at(parent->getNodeRank()) = new std::stringstream;
             }
 
-            if (mod->getNodeRank() == parent->getNodeRank()) { continue;}
-
-            // SEND - position of module - rank of the process to send
-            *this->separate_instructions.at(mod->getNodeRank()) << "SEND " << mod->getPosition() << " " << parent->getNodeRank() << "\n";
+            if (mod->getNodeRank() == parent->getNodeRank()) { 
+                // LINK - name of parent module - name of son module
+                *this->separate_instructions.at(mod->getNodeRank()) << "LINK " << parent->getName() << " " << mod->getName() << "\n";               
+            } else {
+                // SEND - name of module - rank of the process to send
+                *this->separate_instructions.at(mod->getNodeRank()) << "SEND " << mod->getName() << " " << parent->getNodeRank() << "\n";
             
-            // RECV - parent module name - rank of the process recieved from
-            *this->separate_instructions.at(parent->getNodeRank()) << "RECV " << parent->getName() << " " << mod->getNodeRank() << "\n";
+                // RECV - parent module name - rank of the process recieved from
+                *this->separate_instructions.at(parent->getNodeRank()) << "RECV " << parent->getName() << " " << mod->getNodeRank() << "\n";
+            }
         }
         else
         {
@@ -185,6 +189,13 @@ void ModuleManager::getInstructions(int nodesCount)
             *this->separate_instructions.at(mod->getNodeRank()) << "END " << mod->getName() << "\n";
         }
     }
+}
+
+std::string ModuleManager::getInstructionFor(int node_rank) {
+    if (node_rank >= 0 && node_rank < this->separate_instructions.size()) {
+        return this->separate_instructions.at(node_rank)->str();
+    }
+    return "INVALID RANK";
 }
 
 void ModuleManager::printAssignedNodes()
