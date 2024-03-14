@@ -3,6 +3,7 @@
 #include "Divider.h"
 #include "MPIManager.h"
 #include <mpi.h>
+#include <vector>
 
 
 int main(int argc, char* argv[]) {
@@ -65,7 +66,7 @@ int main(int argc, char* argv[]) {
                 Module* mod = used_processes.at(i)->getModule(j);
 
                 if (i == my_rank) {
-                    mpiManager.addNewModule(mod->getName(), mod->getPLA(), my_rank);
+                    mpiManager.addNewModule(mod->getName(), mod->getPLA(), my_rank, mod->getVarCount());
                     my_instructions = moduleManager.getInstructionFor(i);
                     continue;
                 }
@@ -89,8 +90,10 @@ int main(int argc, char* argv[]) {
                 module_name = mpiManager.recvString(0);
                 module_pla = mpiManager.recvString(0);
                 my_instructions = mpiManager.recvString(0);
+                int var_count = mpiManager.recvInt(0);
 
-                mpiManager.addNewModule(module_name, module_pla, my_rank);
+                mpiManager.addNewModule(module_name, module_pla, my_rank, var_count);
+                    
             }
         }
     }

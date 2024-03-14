@@ -1,4 +1,8 @@
 #include "MPIManager.h"
+#include <cstdint>
+#include <libteddy/details/diagram_manager.hpp>
+#include <libteddy/reliability.hpp>
+#include <string>
 
 void MPIManager::evaluate(std::string module_name) {
     Module* mod = this->my_modules.at(module_name);
@@ -13,19 +17,19 @@ void MPIManager::executeModule(std::string module_name, int module_position) {
     Module* mod = this->my_modules.at(module_name);
     if (mod) {
         mod->setPosition(module_position);
-        //double reliability = 0.0;
-
-        //teddy - moze to byt aj v triede modul napr.
-
-        // ERROR !!!!!!!!!
 
         std::string const& cesta = mod->getPath();
         teddy::bss_manager bssManager(mod->getVarCount(), 1'000);
-        auto plaSubor = teddy::pla_file::load_file(cesta);
-        teddy::bss_manager::diagram_t f = bssManager.from_pla(*plaSubor, teddy::fold_type::Left)[0];
-        const double reliability = bssManager.calculate_availability(1, *mod->getSonsReliability(), f);
-        
+        std::cout << cesta << std::endl;
+        std::optional<teddy::pla_file> plaSubor = teddy::pla_file::load_file(cesta);
+        std::cout << "loaded pla\n";
+
         // ERROR !!!!!!!!!
+        teddy::bss_manager::diagram_t f = bssManager.from_pla(*plaSubor, teddy::fold_type::Left)[0];
+        // ERROR !!!!!!!!!
+
+        std::cout << "made a function\n";
+        const double reliability = bssManager.calculate_availability(1, *mod->getSonsReliability(), f);
 
         mod->setReliability(reliability);
         std::cout << "Module " << mod->getName() << " reliability is " << reliability << " with position " << mod->getPosition() << std::endl;
@@ -64,9 +68,12 @@ void MPIManager::recvModule(std::string parent_name, int sender) {
     if (parent) {
         int son_position;
         double son_rel;
+        //int var_count;
 
         MPI_Recv(&son_position, 1, MPI_INT, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Recv(&son_rel, 1, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        //MPI_Recv(&var_count, 1, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        
         parent->setSonsReliability(son_position, son_rel);
 
         std::cout << "Recieved module on position " << son_position << " " << son_rel << std::endl;
@@ -99,65 +106,6 @@ void MPIManager::complete_instruction(std::string instructions) {
             }
         }
     }
-
-    // std::cout << "prikaz: " << keyWord << std::endl;
-    // std::cout << "param 1: " << paramFirst << std::endl;
-    // if (!paramSecond.empty()) {
-    //     std::cout << "param 2: " << paramSecond << std::endl;
-    // }
-
-    /*
-    auto constexpr is_space = [](auto const character)
-        {
-            return static_cast<bool>(std::isspace(character));
-        };
-
-    auto input_string = std::istringstream(instructions);
-
-    auto line = std::string();
-    std::cout << "moje instrukcie:\n";
-    while (std::getline(input_string, line)) {
-
-        auto const first
-            = std::find_if_not(std::begin(line), std::end(line), is_space);
-        auto const last = std::end(line);
-        if (first == last)
-        {
-            // Skip empty line.
-            continue;
-        }
-
-        auto const key = std::find_if(first, last, is_space);
-        auto const valFirst = key == last
-            ? last
-            : std::find_if_not(key + 1, last, is_space);
-        auto const valSecond = valFirst == last
-            ? last
-            : std::find_if_not(valFirst + 1, last, is_space);
-        
-        std::string keyWord = std::string(first, key);
-        std::string paramFirst, paramSecond;
-        if (valFirst != last)
-        {
-            auto valLast = std::find_if(valFirst, last, is_space);
-            paramFirst = std::string(valFirst, valLast);
-        }
-
-        if (valSecond != last) {
-            auto valLast = std::find_if(valSecond, last, is_space);
-            paramSecond = std::string(valSecond, valLast);
-        }
-
-        std::cout << "prikaz: " << keyWord << std::endl;
-        std::cout << "param 1: " << paramFirst << std::endl;
-        if (!paramSecond.empty()) {
-            std::cout << "param 2: " << paramSecond << std::endl;
-        }
-
- 
-    }*/
-
-
 }
 
 void MPIManager::sendString(std::string message, int recvRank) {
@@ -166,10 +114,21 @@ void MPIManager::sendString(std::string message, int recvRank) {
     MPI_Send(message.c_str(), size, MPI_CHAR, recvRank, 0, MPI_COMM_WORLD);
 }
 
+void MPIManager::sendInt(int message, int recvRank) {
+    MPI_Send(&message, 1, MPI_INT, recvRank, 0, MPI_COMM_WORLD);
+}
+
+int MPIManager::recvInt(int sendRank) {
+    int message;
+    MPI_Recv(&message, 1, MPI_INT, sendRank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    return message;
+}
+
 void MPIManager::sendModuleInfo(Module* mod, std::string instructions, int recvRank) {
     sendString(mod->getName(), recvRank);
     sendString(mod->getPLA(), recvRank);
     sendString(instructions, recvRank);
+    sendInt(mod->getVarCount(), recvRank);
 }
 
 std::string MPIManager::recvString(int sendRank) {
@@ -181,11 +140,13 @@ std::string MPIManager::recvString(int sendRank) {
     return message;
 }
 
-void MPIManager::addNewModule(std::string name, std::string pla, int my_rank) {
+void MPIManager::addNewModule(std::string name, std::string pla, int my_rank, int var_count) {
     Module* temp = new Module(name);
+    temp->setVarCount(var_count);
     temp->setPLA(pla);
     temp->setPath(this->PLA_PATH + "PROCESS " + std::to_string(my_rank) + "/" + name + ".pla");
     this->my_modules.emplace(name, temp);
+    //std::cout << temp->getName() << " " << temp->getVarCount() << std::endl;
 }
 
 void MPIManager::writeToPLA() {
