@@ -24,6 +24,9 @@ void MPIManager::executeModule(std::string module_name, int module_position) {
         std::optional<teddy::pla_file> plaSubor = teddy::pla_file::load_file(cesta);
         std::cout << "loaded pla\n";
 
+        // spustit viac procesov mozete aj pomocou:   // mpiexec -n 2 BDD_Distributor/main //
+        // ak ste v adresari build/, kde 2 znamená počet prcesov
+
         // ERROR !!!!!!!!!
         teddy::bss_manager::diagram_t f = bssManager.from_pla(*plaSubor, teddy::fold_type::Left)[0];
         // ERROR !!!!!!!!!
@@ -146,7 +149,7 @@ void MPIManager::addNewModule(std::string name, std::string pla, int my_rank, in
     temp->setPLA(pla);
     temp->setPath(this->PLA_PATH + "PROCESS " + std::to_string(my_rank) + "/" + name + ".pla");
     this->my_modules.emplace(name, temp);
-    //std::cout << temp->getName() << " " << temp->getVarCount() << std::endl;
+    std::cout << temp->getName() << " " << temp->getVarCount() << std::endl;
 }
 
 void MPIManager::writeToPLA() {

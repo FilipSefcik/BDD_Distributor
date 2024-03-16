@@ -14,6 +14,8 @@ int main(int argc, char* argv[]) {
     int process_count;
     MPI_Comm_size(MPI_COMM_WORLD, &process_count);
 
+    std::cout << process_count << std::endl;
+
     // Get the rank of the process
     int my_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
