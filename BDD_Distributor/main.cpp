@@ -1,4 +1,6 @@
+#include <cstdint>
 #include <iostream>
+#include "Module.h"
 #include "ModuleManager.h"
 #include "Divider.h"
 #include "MPIManager.h"
@@ -14,7 +16,7 @@ int main(int argc, char* argv[]) {
     int process_count;
     MPI_Comm_size(MPI_COMM_WORLD, &process_count);
 
-    std::cout << process_count << std::endl;
+    //std::cout << &process_count << std::endl;
 
     // Get the rank of the process
     int my_rank;
@@ -23,12 +25,9 @@ int main(int argc, char* argv[]) {
     // rank 0, na ktorom sa pracuje, musí najprv
     // spracovať config súbor modulov
 
-    std::vector<Node*> processes, used_processes;
+    //std::vector<Node*> processes, used_processes;
     
     int my_assigned_modules_count;
-
-    std::vector<int> assignedCount;
-    assignedCount.resize(process_count);
 
     std::string module_name, module_pla, my_instructions;
 
@@ -36,36 +35,44 @@ int main(int argc, char* argv[]) {
 
     if (my_rank == 0)
     {
-        for (int i = 0; i < process_count; i++) {
-            processes.push_back(new Node(i));
-        }
+        std::vector<int> assigned_modules;
+        assigned_modules.resize(process_count);
+        int used_processes_count;
 
         ModuleManager moduleManager;
 	    moduleManager.loadModules("/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/Modules/module_map.conf");
         moduleManager.loadPLA();
 
-        NodeDivider divider;
-	    divider.divideModules(moduleManager.getModules(), &processes);    
+        moduleManager.printModules();
+        moduleManager.printModulePLA();
 
+
+        NodeDivider divider;
+	    divider.divideModules(moduleManager.getModules(), &assigned_modules);  
+
+        moduleManager.printAssignedNodes();
+
+        MPI_Scatter(assigned_modules.data(), 1, MPI_INT, &my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
         for (int i = 0; i < process_count; i++) {
-            assignedCount.at(i) = processes.at(i)->getModulesCount();
-            if (assignedCount.at(i) == 0) {
-                delete processes.at(i);
+            if (assigned_modules.at(i) > 0) {
+                used_processes_count++;
             } else {
-                used_processes.push_back(processes.at(i));
+                // may be changed depending on what divider method will be used
+                break;
             }
-        } 
+        }
 
-        MPI_Scatter(assignedCount.data(), 1, MPI_INT, &my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
-        moduleManager.getInstructions(used_processes.size());
-
+        moduleManager.getInstructions(used_processes_count);
+        
+        moduleManager.printSeparateInstructions();  
+    
         //send to each used process
-        for (int i = 0; i < used_processes.size(); i++) {
+        for (int i = 0; i < used_processes_count; i++) {
             //send each module assigned
-            for (int j = 0; j < used_processes.at(i)->getModulesCount(); j++) {
-                Module* mod = used_processes.at(i)->getModule(j);
+            std::vector<Module*>* nodes_modules = moduleManager.getModulesForNode(i);
+            for (int j = 0; j < nodes_modules->size(); j++) {
+                Module* mod = nodes_modules->at(j);
 
                 if (i == my_rank) {
                     mpiManager.addNewModule(mod->getName(), mod->getPLA(), my_rank, mod->getVarCount());
@@ -73,18 +80,13 @@ int main(int argc, char* argv[]) {
                     continue;
                 }
 
-                mpiManager.sendModuleInfo(mod, moduleManager.getInstructionFor(i), used_processes.at(i)->getRank());
+                mpiManager.sendModuleInfo(mod, moduleManager.getInstructionFor(i), i);
             }
+            delete nodes_modules;
         }
-
-        for (int i = 0; i < used_processes.size(); i++) {
-            delete used_processes.at(i);
-        }
-        processes.clear();
-        used_processes.clear();
 
     } else {
-        MPI_Scatter(assignedCount.data(), 1, MPI_INT, &my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Scatter(nullptr, 1, MPI_INT, &my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
         if (my_assigned_modules_count > 0) {
             for (int i = 0; i < my_assigned_modules_count; i++) {

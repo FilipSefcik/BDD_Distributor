@@ -5,7 +5,7 @@ Module::Module(std::string paName) {
     this->sons_reliability = new std::vector<std::vector<double>>();
 }
 
-void Module::addSon(int position, Module* newSon)
+void Module::addSon(Module* newSon)
 {
     newSon->setParent(this);
     this->addPriority(newSon->getPriority());

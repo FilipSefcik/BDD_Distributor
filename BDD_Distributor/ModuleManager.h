@@ -4,6 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <regex>
+#include <unordered_map>
 #include <vector>
 #include "Divider.h"
 #include "Module.h"
@@ -11,21 +12,22 @@
 class ModuleManager
 {
 private:
-	std::unordered_map<std::string, Module*> modules;
-	std::vector<Module*> vector_modules;
+	std::vector<Module*> modules;
 	std::vector<std::stringstream*> separate_instructions;
+	std::unordered_map<std::string, int> module_mapping;
 public:
 	~ModuleManager();
 	
-	std::unordered_map<std::string, Module*>* getModules() { return &this->modules; };
+	std::vector<Module*>* getModules() { return &this->modules; };
 	void getInstructions(int nodesCount);
     std::string getInstructionFor(int node_rank);
+	std::vector<Module*>* getModulesForNode(int node_rank);
 
 	void loadModules(std::string confPath);
 	void loadPLA();
 
 	void printModules();
-	void prinModulePLA();
+	void printModulePLA();
 	void printAssignedNodes();
 	void printSeparateInstructions();
 };

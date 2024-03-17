@@ -26,4 +26,5 @@ public:
     std::string recvString(int sendRank);
     int recvInt(int sendRank);
     void writeToPLA();
+    void printMyModules(int my_rank);
 };

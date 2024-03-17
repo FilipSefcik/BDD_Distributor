@@ -149,7 +149,7 @@ void MPIManager::addNewModule(std::string name, std::string pla, int my_rank, in
     temp->setPLA(pla);
     temp->setPath(this->PLA_PATH + "PROCESS " + std::to_string(my_rank) + "/" + name + ".pla");
     this->my_modules.emplace(name, temp);
-    std::cout << temp->getName() << " " << temp->getVarCount() << std::endl;
+    //std::cout << temp->getName() << " " << temp->getVarCount() << std::endl;
 }
 
 void MPIManager::writeToPLA() {
@@ -164,4 +164,11 @@ MPIManager::~MPIManager() {
     }
 
     my_modules.clear();
+}
+
+void MPIManager::printMyModules(int my_rank) {
+    std::cout << my_rank << std::endl;
+    for (auto pair : this->my_modules) {
+        std::cout << pair.second->getName() << std::endl;
+    }
 }

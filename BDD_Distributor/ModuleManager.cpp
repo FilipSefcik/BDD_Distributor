@@ -1,4 +1,7 @@
 #include "ModuleManager.h"
+#include "Module.h"
+#include <cstdint>
+#include <vector>
 
 void ModuleManager::loadModules(std::string confPath)
 {
@@ -58,8 +61,13 @@ void ModuleManager::loadModules(std::string confPath)
             auto val = std::string(valFirst, valLast);
             Module* mod = new Module(std::move(key));
             mod->setPath(std::move(val));
-            this->modules.emplace(mod->getName(), mod);
-            this->vector_modules.push_back(mod);
+
+            // size at start is 0, so when we add first module, it will have index 0, so it works
+            this->module_mapping.emplace(mod->getName(), this->modules.size());
+            this->modules.push_back(mod);
+
+            // since we first added module, size is 1 but index is 0, so we need to discard 1
+            // this->module_mapping.emplace(mod->getName(), this->vector_modules.size() - 1);
         }
     }
 
@@ -108,11 +116,11 @@ void ModuleManager::loadModules(std::string confPath)
                         moduleName << val[j];
                         digits++;
                     }
-                    this->modules.at(key)->addSon(position, this->modules.at(moduleName.str()));
-                    this->modules.at(moduleName.str())->setPosition(position);
+                    this->modules.at(this->module_mapping.at(moduleName.str()))->setPosition(position);
+                    this->modules.at(this->module_mapping.at(key))->addSon(this->modules.at(this->module_mapping.at(moduleName.str())));
                 }
             }
-            this->modules.at(key)->setVarCount(val.size() - digits);
+            this->modules.at(this->module_mapping.at(key))->setVarCount(val.size() - digits);
         }
 
     } while (std::getline(file, line));
@@ -120,9 +128,8 @@ void ModuleManager::loadModules(std::string confPath)
 
 ModuleManager::~ModuleManager()
 {
-    for (auto& pair : this->modules)
-    {
-        delete pair.second;
+    for (int i = 0; i < this->modules.size(); i++) {
+        delete this->modules.at(i);
     }
 
     for (int i = 0; i < this->separate_instructions.size(); i++)
@@ -138,25 +145,24 @@ void ModuleManager::printModules()
 {
     if (this->modules.empty()) { return; }
 
-    for (auto& pair : this->modules)
-    {
-        std::cout << pair.first << " " << pair.second->getPath() << "\n";
-        std::cout << "My position: " << pair.second->getPosition() << "\n";
-        pair.second->printSons();
+    for (Module* mod : this->modules) {
+        std::cout << mod->getName() << " " << mod->getPath() << "\n";
+        std::cout << "My position: " << mod->getPosition() << "\n";
+        mod->printSons();
         std::cout << "\n";
     }
 }
 
 void ModuleManager::getInstructions(int nodesCount)
 {
-    this->separate_instructions.resize(nodesCount > modules.size() ?
-                                        modules.size() : nodesCount);
+    this->separate_instructions.resize(nodesCount > this->modules.size() ?
+                                        this->modules.size() : nodesCount);
 
-    std::sort(this->vector_modules.begin(), this->vector_modules.end(), [](Module* a, Module* b) { return a->getPriority() < b->getPriority(); });
+    std::sort(this->modules.begin(), this->modules.end(), [](Module* a, Module* b) { return a->getPriority() < b->getPriority(); });
 
-    for (int i = 0; i < this->vector_modules.size(); i++)
+    for (int i = 0; i < this->modules.size(); i++)
     {
-        Module* mod = this->vector_modules.at(i);
+        Module* mod = this->modules.at(i);
         Module* parent = mod->getParent();
         if (!this->separate_instructions.at(mod->getNodeRank()))
         {
@@ -198,13 +204,24 @@ std::string ModuleManager::getInstructionFor(int node_rank) {
     return "INVALID RANK";
 }
 
+
+std::vector<Module*>* ModuleManager::getModulesForNode(int node_rank) {
+    std::vector<Module*>* nodes_modules = new std::vector<Module*>();
+    for (Module* mod : this->modules) {
+        if (mod->getNodeRank() == node_rank) {
+            nodes_modules->push_back(mod);
+        }
+    }
+    return nodes_modules;
+}
+
 void ModuleManager::printAssignedNodes()
 {
     if (this->modules.empty()) { return; }
 
-    for (auto& pair : this->modules)
+    for (Module* mod : this->modules)
     {
-        std::cout << pair.first << " " << pair.second->getNodeRank() << "\n";
+        std::cout << mod->getName() << " " << mod->getNodeRank() << "\n";
     }
 }
 
@@ -217,12 +234,12 @@ void ModuleManager::printSeparateInstructions()
     }
 }
 
-void ModuleManager::prinModulePLA()
+void ModuleManager::printModulePLA()
 {
-    for (auto& pair : this->modules)
+    for (Module* mod : this->modules)
     {
-        std::cout << pair.second->getName() << std::endl;
-        pair.second->printPLA();
+        std::cout << mod->getName() << std::endl;
+        mod->printPLA();
         std::cout << std::endl;
     }
 }
@@ -231,14 +248,14 @@ void ModuleManager::loadPLA()
 {
     if (this->modules.empty()) { return; }
 
-    for (auto& pair : this->modules)
+    for (Module* mod : this->modules)
     {
-        auto file = std::ifstream(pair.second->getPath());
+        auto file = std::ifstream(mod->getPath());
 
         if (file.is_open())
         {
             std::string file_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-            pair.second->setPLA(file_content);
+            mod->setPLA(file_content);
         }
         
         file.close();

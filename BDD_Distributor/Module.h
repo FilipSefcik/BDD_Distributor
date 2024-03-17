@@ -14,7 +14,7 @@ private:
 	std::string pla_file;
 	std::vector<std::vector<double>>* sons_reliability;
 	Module* parent = nullptr;
-	int assignedNode;
+	int assignedNode = 0;
 	int position = 0;
 	int priority = 0; // number of modules between the furthest "child" module and this module
 	int varCount = 0;
@@ -42,7 +42,7 @@ public:
 	void setPLA(std::string plaFileContent) { this->pla_file = plaFileContent; };
     void setSonsReliability(int sonPosition, double sonRel);
 
-	void addSon(int position, Module* newSon);
+	void addSon(Module* newSon);
 	void setVarCount(int paVarCount);
 	void addPriority(int sonPriority);
 

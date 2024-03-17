@@ -1,14 +1,14 @@
 #pragma once
 #include "Module.h"
-#include "Node.h"
 #include <iostream>
+#include <vector>
 
 class Divider
 {
 protected:
     bool flag = false;
 public:
-    virtual void divideModules(std::unordered_map<std::string, Module*>* modules, std::vector<Node*>* nodes) {
+    virtual void divideModules(std::vector<Module*>* modules, std::vector<int>* nodes) {
         if (modules->empty())
         {
             std::cout << "There are no modules to divide.\n";
@@ -27,17 +27,17 @@ public:
 
 class NodeDivider : public Divider {
 public:
-    void divideModules(std::unordered_map<std::string, Module*>* modules, std::vector<Node*>* nodes) override {
+    void divideModules(std::vector<Module*>* modules, std::vector<int>* nodes) override {
         
         Divider::divideModules(modules, nodes);
 
         if (this->flag) { return; }
 
         int nodeUsed = 0;              
-
-        for (auto& pair : *modules) {
-            nodes->at(nodeUsed)->assignModule(pair.second);
-            pair.second->assignNode(nodes->at(nodeUsed)->getRank());
+        
+        for (Module* mod : *modules) {
+            nodes->at(nodeUsed)++;
+            mod->assignNode(nodeUsed);
             nodeUsed = (nodeUsed + 1) % nodes->size();
         }
     }
