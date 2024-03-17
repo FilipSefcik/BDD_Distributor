@@ -43,9 +43,8 @@ int main(int argc, char* argv[]) {
 	    moduleManager.loadModules("/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/Modules/module_map.conf");
         moduleManager.loadPLA();
 
-        moduleManager.printModules();
-        moduleManager.printModulePLA();
-
+        // moduleManager.printModules();
+        // moduleManager.printModulePLA();
 
         NodeDivider divider;
 	    divider.divideModules(moduleManager.getModules(), &assigned_modules);  

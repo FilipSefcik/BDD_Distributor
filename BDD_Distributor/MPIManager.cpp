@@ -22,7 +22,7 @@ void MPIManager::executeModule(std::string module_name, int module_position) {
         teddy::bss_manager bssManager(mod->getVarCount(), 1'000);
         std::cout << cesta << std::endl;
         std::optional<teddy::pla_file> plaSubor = teddy::pla_file::load_file(cesta);
-        std::cout << "loaded pla\n";
+        std::cout << "loaded pla " << &plaSubor << std::endl;
 
         // spustit viac procesov mozete aj pomocou:   // mpiexec -n 2 BDD_Distributor/main //
         // ak ste v adresari build/, kde 2 znamená počet prcesov
