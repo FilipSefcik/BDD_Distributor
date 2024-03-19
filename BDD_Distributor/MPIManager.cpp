@@ -22,7 +22,7 @@ void MPIManager::executeModule(std::string module_name, int module_position) {
         teddy::bss_manager bssManager(mod->getVarCount(), 1'000);
         std::cout << cesta << std::endl;
         std::optional<teddy::pla_file> plaSubor = teddy::pla_file::load_file(cesta);
-        std::cout << "loaded pla " << &plaSubor << std::endl;
+        std::cout << "loaded pla " << cesta << std::endl;
 
         // spustit viac procesov mozete aj pomocou:   // mpiexec -n 2 BDD_Distributor/main //
         // ak ste v adresari build/, kde 2 znamená počet prcesov
@@ -58,8 +58,8 @@ void MPIManager::sendModule(std::string module_name, int recievers_rank) {
         int mod_position = mod->getPosition();
         double mod_rel = mod->getReliability();
 
-        MPI_Send(&mod_position, 1, MPI_INT, recievers_rank, 0, MPI_COMM_WORLD);
-        MPI_Send(&mod_rel, 1, MPI_DOUBLE, recievers_rank, 0, MPI_COMM_WORLD);
+        // MPI_Send(&mod_position, 1, MPI_INT, recievers_rank, 0, MPI_COMM_WORLD);
+        // MPI_Send(&mod_rel, 1, MPI_DOUBLE, recievers_rank, 0, MPI_COMM_WORLD);
         std::cout << "Sent module " << mod->getName() << " " << mod_position << " " << mod_rel << std::endl;
     } else {
         std::cout << "No module found\n";
@@ -71,11 +71,11 @@ void MPIManager::recvModule(std::string parent_name, int sender) {
     if (parent) {
         int son_position;
         double son_rel;
-        //int var_count;
+        int var_count;
 
-        MPI_Recv(&son_position, 1, MPI_INT, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        MPI_Recv(&son_rel, 1, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        //MPI_Recv(&var_count, 1, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        // MPI_Recv(&son_position, 1, MPI_INT, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        // MPI_Recv(&son_rel, 1, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        // MPI_Recv(&var_count, 1, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         
         parent->setSonsReliability(son_position, son_rel);
 
@@ -112,20 +112,34 @@ void MPIManager::complete_instruction(std::string instructions) {
 }
 
 void MPIManager::sendString(std::string message, int recvRank) {
-    int size = message.size() + 1;
-    MPI_Send(&size, 1, MPI_INT, recvRank, 0, MPI_COMM_WORLD);
-    MPI_Send(message.c_str(), size, MPI_CHAR, recvRank, 0, MPI_COMM_WORLD);
+    // int size = message.size() + 1;
+    // MPI_Send(&size, 1, MPI_INT, recvRank, 0, MPI_COMM_WORLD);
+    // MPI_Send(message.c_str(), size, MPI_CHAR, recvRank, 0, MPI_COMM_WORLD);
 }
 
 void MPIManager::sendInt(int message, int recvRank) {
-    MPI_Send(&message, 1, MPI_INT, recvRank, 0, MPI_COMM_WORLD);
+    //MPI_Send(&message, 1, MPI_INT, recvRank, 0, MPI_COMM_WORLD);
 }
 
 int MPIManager::recvInt(int sendRank) {
     int message;
-    MPI_Recv(&message, 1, MPI_INT, sendRank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    //MPI_Recv(&message, 1, MPI_INT, sendRank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     return message;
 }
+
+void MPIManager::recieveMyModules(int pa_my_assigned_modules, int pa_my_rank, std::string& pa_my_instructions) {
+    std::string module_name, module_pla;
+    for (int i = 0; i < pa_my_assigned_modules; i++) {
+
+        module_name = this->recvString(0);
+        module_pla = this->recvString(0);
+        pa_my_instructions = this->recvString(0);
+        int var_count = this->recvInt(0);
+
+        this->addNewModule(module_name, module_pla, pa_my_rank, var_count);
+                    
+     }
+} 
 
 void MPIManager::sendModuleInfo(Module* mod, std::string instructions, int recvRank) {
     sendString(mod->getName(), recvRank);
@@ -137,9 +151,9 @@ void MPIManager::sendModuleInfo(Module* mod, std::string instructions, int recvR
 std::string MPIManager::recvString(int sendRank) {
     int size;
     char* message;
-    MPI_Recv(&size, 1, MPI_INT, sendRank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    message = (char*)malloc(sizeof(char)*size);
-    MPI_Recv(message, size, MPI_CHAR, sendRank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    // MPI_Recv(&size, 1, MPI_INT, sendRank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    // message = (char*)malloc(sizeof(char)*size);
+    // MPI_Recv(message, size, MPI_CHAR, sendRank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     return message;
 }
 
@@ -149,7 +163,7 @@ void MPIManager::addNewModule(std::string name, std::string pla, int my_rank, in
     temp->setPLA(pla);
     temp->setPath(this->PLA_PATH + "PROCESS " + std::to_string(my_rank) + "/" + name + ".pla");
     this->my_modules.emplace(name, temp);
-    //std::cout << temp->getName() << " " << temp->getVarCount() << std::endl;
+    std::cout << temp->getName() << " " << temp->getVarCount() << std::endl;
 }
 
 void MPIManager::writeToPLA() {

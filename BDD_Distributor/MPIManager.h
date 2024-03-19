@@ -4,7 +4,7 @@
 #include "Module.h"
 
 #include <libteddy/reliability.hpp>
-#include <mpi.h>
+//#include <mpi.h>
 
 class MPIManager {
 private:
@@ -18,6 +18,7 @@ public:
     void linkModules(std::string parent_name, std::string son_name);
     void sendModule(std::string module_name, int recievers_rank);
     void recvModule(std::string parent_name, int sender);
+    void recieveMyModules(int pa_my_assigned_modules, int pa_my_rank, std::string& pa_my_instructions);
     void complete_instruction(std::string instructions);
     void addNewModule(std::string name, std::string pla, int my_rank, int var_count);
     void sendString(std::string message, int recvRank);
