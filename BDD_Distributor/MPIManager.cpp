@@ -20,7 +20,7 @@ void MPIManager::executeModule(std::string module_name, int module_position) {
 
         std::string const& cesta = mod->getPath();
         teddy::bss_manager bssManager(mod->getVarCount(), 1'000);
-        std::cout << cesta << std::endl;
+        //std::cout << cesta << std::endl;
         std::optional<teddy::pla_file> plaSubor = teddy::pla_file::load_file(cesta);
         std::cout << "loaded pla " << cesta << std::endl;
 
@@ -163,7 +163,7 @@ void MPIManager::addNewModule(std::string name, std::string pla, int my_rank, in
     temp->setPLA(pla);
     temp->setPath(this->PLA_PATH + "PROCESS " + std::to_string(my_rank) + "/" + name + ".pla");
     this->my_modules.emplace(name, temp);
-    std::cout << temp->getName() << " " << temp->getVarCount() << std::endl;
+    //std::cout << temp->getName() << " " << temp->getVarCount() << std::endl;
 }
 
 void MPIManager::writeToPLA() {
