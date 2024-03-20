@@ -79,3 +79,12 @@ void Module::writePLAFile() {
 
     outputFile.close();
 }
+
+void Module::printSonsReliabilities() {
+    for (int i = 0; i < this->sons_reliability->size(); i++) {
+        for (int j = 0; j < this->sons_reliability->at(i).size(); j++) {
+            std::cout << this->sons_reliability->at(i).at(j) << " ";
+        }
+        std::cout << std::endl;
+    }
+}

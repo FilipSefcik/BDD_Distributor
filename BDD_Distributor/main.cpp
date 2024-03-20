@@ -4,7 +4,7 @@
 #include "ModuleManager.h"
 #include "Divider.h"
 #include "MPIManager.h"
-//#include <mpi.h>
+#include <mpi.h>
 #include <vector>
 
 // temporary funtions, will be refactored, used for easier reading
@@ -42,6 +42,7 @@ void distributeModules(int used_processes_count, int pa_my_rank, std::string& pa
 }
 
 // without MPI
+/*
 int main(int argc, char* argv[]) {
 
     int process_count = 1;
@@ -75,7 +76,7 @@ int main(int argc, char* argv[]) {
 
     moduleManager.getInstructions(used_processes_count);
         
-    // moduleManager.printSeparateInstructions();  
+    moduleManager.printSeparateInstructions();  
 
     distributeModules(used_processes_count, my_rank, my_instructions, &moduleManager, &mpiManager);
 
@@ -85,10 +86,10 @@ int main(int argc, char* argv[]) {
     }
 
     return 0;
-}
+}*/
 
 
-/* with MPI
+//with MPI
 int main(int argc, char* argv[]) {
     // Initialize the MPI environment
     MPI_Init(NULL, NULL);
@@ -126,17 +127,15 @@ int main(int argc, char* argv[]) {
         NodeDivider divider;
 	    divider.divideModules(moduleManager.getModules(), &assigned_modules);  
 
-        moduleManager.printAssignedNodes();
+        // moduleManager.printAssignedNodes();
 
         MPI_Scatter(assigned_modules.data(), 1, MPI_INT, &my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
-        
-        //my_assigned_modules_count = assigned_modules.at(0);
         
         used_processes_count = getUsedProcessesCount(&assigned_modules);
 
         moduleManager.getInstructions(used_processes_count);
         
-        moduleManager.printSeparateInstructions();  
+        // moduleManager.printSeparateInstructions();  
 
         distributeModules(used_processes_count, my_rank, my_instructions, &moduleManager, &mpiManager);
 
@@ -156,4 +155,4 @@ int main(int argc, char* argv[]) {
     //Finalize the MPI environment.
     MPI_Finalize();
     return 0;
-}*/
+}

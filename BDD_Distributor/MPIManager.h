@@ -1,10 +1,12 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include <cstdint>
+#include <mpi.h>
+#include <iostream>
 #include "Module.h"
-
+#include <libteddy/details/diagram_manager.hpp>
 #include <libteddy/reliability.hpp>
-//#include <mpi.h>
 
 class MPIManager {
 private:

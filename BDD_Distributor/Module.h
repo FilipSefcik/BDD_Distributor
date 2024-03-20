@@ -50,5 +50,6 @@ public:
 	void printPLA();
 	void printSons();
     void writePLAFile();
+	void printSonsReliabilities();
 };
 
