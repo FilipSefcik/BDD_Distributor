@@ -18,7 +18,7 @@ private:
 	int position = 0;
 	int priority = 0; // number of modules between the furthest "child" module and this module
 	int varCount = 0;
-	double my_reliability = 0.55;
+	double my_reliability = 0.5;
 public:
 	Module(std::string paName);
 	~Module(){ delete this->sons_reliability; };
@@ -40,7 +40,7 @@ public:
 	void setParent(Module* paParent) { this->parent = paParent; };
 	void assignNode(int paNode) { this->assignedNode = paNode; };
 	void setPLA(std::string plaFileContent) { this->pla_file = plaFileContent; };
-    void setSonsReliability(int sonPosition, double sonRel);
+    void setSonsReliability(int sonPosition, double sonRel, int state);
 
 	void addSon(Module* newSon);
 	void setVarCount(int paVarCount);

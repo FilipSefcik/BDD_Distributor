@@ -149,7 +149,7 @@ int main(int argc, char* argv[]) {
 
     if (my_assigned_modules_count > 0) { 
         mpiManager.writeToPLA();
-        mpiManager.complete_instruction(my_instructions);
+        mpiManager.complete_instruction(my_instructions, 0);
     }
 
     //Finalize the MPI environment.

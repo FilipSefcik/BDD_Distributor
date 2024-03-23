@@ -25,8 +25,12 @@ void MPIManager::executeModule(std::string module_name, int module_position) {
         teddy::bss_manager::diagram_t f = bssManager.from_pla(*plaSubor, teddy::fold_type::Left)[0];
 
         //std::cout << "made a function\n";
-        const double reliability = bssManager.calculate_availability(1, *mod->getSonsReliability(), f);
 
+        const double reliability = this->calculated_state == 1 ? 
+                                    bssManager.calculate_availability(1, *mod->getSonsReliability(), f) :
+                                    bssManager.calculate_unavailability(1, *mod->getSonsReliability(), f);
+
+        //std::cout << this->calculated_state << std::endl;
         mod->setReliability(reliability);
         //std::cout << "Module " << mod->getName() << " reliability is " << reliability << " with position " << mod->getPosition() << std::endl;
     } else {
@@ -38,7 +42,7 @@ void MPIManager::linkModules(std::string parent_name, std::string son_name) {
     Module* parent = this->my_modules.at(parent_name);
     Module* son = this->my_modules.at(son_name);
     if (parent && son) {
-        parent->setSonsReliability(son->getPosition(), son->getReliability());
+        parent->setSonsReliability(son->getPosition(), son->getReliability(), this->calculated_state);
         //std::cout << "Linked modules " << parent->getName() << " <-> " << son->getName() << std::endl;
     } else {
         std::cout << "No module found.\n";
@@ -72,7 +76,7 @@ void MPIManager::recvModule(std::string parent_name, int sender) {
         MPI_Recv(&son_position, 1, MPI_INT, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Recv(&son_rel, 1, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         
-        parent->setSonsReliability(son_position, son_rel);
+        parent->setSonsReliability(son_position, son_rel, this->calculated_state);
 
         //std::cout << "Recieved module on position " << son_position << " " << son_rel << std::endl;
     } else {
@@ -81,7 +85,13 @@ void MPIManager::recvModule(std::string parent_name, int sender) {
 }
 
 
-void MPIManager::complete_instruction(std::string instructions) {
+void MPIManager::complete_instruction(std::string instructions, int state) {
+    if (state != 0 && state != 1) {
+        std::cout << "Invalid state\n";
+        return;
+    }
+
+    this->calculated_state = state;
     
     auto input_string = std::istringstream(instructions);
 

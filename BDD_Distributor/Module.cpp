@@ -51,9 +51,10 @@ void Module::setVarCount(int paVarCount) {
     }
 }
 
-void Module::setSonsReliability(int sonPosition, double sonRel) {
+void Module::setSonsReliability(int sonPosition, double sonRel, int state) {
     if (sonPosition >= 0 && sonPosition < this->sons_reliability->size()) {
-        this->sons_reliability->at(sonPosition) = {1.0 - sonRel, sonRel};
+        this->sons_reliability->at(sonPosition).at(state) = sonRel;
+        this->sons_reliability->at(sonPosition).at((state + 1) % 2) = 1.0 - sonRel;
     }
 }
 
