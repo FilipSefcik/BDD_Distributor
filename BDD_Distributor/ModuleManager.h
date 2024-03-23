@@ -22,6 +22,7 @@ public:
     std::string getInstructionFor(int node_rank);
 	std::vector<Module*>* getModulesForNode(int node_rank);
 
+	void load(std::string confPath);
 	void loadModules(std::string confPath);
 	void loadPLA();
 

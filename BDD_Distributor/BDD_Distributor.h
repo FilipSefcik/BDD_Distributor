@@ -12,7 +12,7 @@ class BDD_Distributor
 {
 private:
     int my_rank, process_count, my_assigned_modules_count;
-    std::string my_instructions, conf_path;
+    std::string conf_path;
     MPIManager mpiManager;
 
 public:

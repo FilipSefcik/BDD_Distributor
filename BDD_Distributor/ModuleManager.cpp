@@ -3,6 +3,11 @@
 #include <cstdint>
 #include <vector>
 
+void ModuleManager::load(std::string confPath) {
+    this->loadModules(confPath);
+    this->loadPLA();
+}
+
 void ModuleManager::loadModules(std::string confPath)
 {
     auto constexpr is_space = [](auto const character)
