@@ -3,8 +3,9 @@ add_executable(
         main.cpp
         Module.cpp
         ModuleManager.cpp
-        Node.cpp
+        # Node.cpp
         MPIManager.cpp
+        MPICommunicator.cpp
 )
 
 find_package(TeDDy REQUIRED)

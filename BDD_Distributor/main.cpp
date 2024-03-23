@@ -91,6 +91,12 @@ int main(int argc, char* argv[]) {
 
 //with MPI
 int main(int argc, char* argv[]) {
+
+    // std::cout << argc << std::endl;
+
+    // for (int i = 0; i < argc; i++) {
+    //     std::cout << "argument: " << argv[i] << std::endl;
+    // }
     // Initialize the MPI environment
     MPI_Init(NULL, NULL);
 
@@ -118,7 +124,7 @@ int main(int argc, char* argv[]) {
         int used_processes_count;
 
         ModuleManager moduleManager;
-	    moduleManager.loadModules("/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/Modules/module_map.conf");
+	    moduleManager.loadModules("../BDD_Distributor/Modules/module_map.conf");
         moduleManager.loadPLA();
 
         // moduleManager.printModules();
@@ -149,7 +155,7 @@ int main(int argc, char* argv[]) {
 
     if (my_assigned_modules_count > 0) { 
         mpiManager.writeToPLA();
-        mpiManager.complete_instruction(my_instructions, 0);
+        mpiManager.complete_instruction(my_instructions, 1);
     }
 
     //Finalize the MPI environment.

@@ -1,4 +1,5 @@
 #include "MPIManager.h"
+#include <mpi.h>
 
 void MPIManager::evaluate(std::string module_name) {
     Module* mod = this->my_modules.at(module_name);
@@ -52,12 +53,10 @@ void MPIManager::linkModules(std::string parent_name, std::string son_name) {
 void MPIManager::sendModule(std::string module_name, int recievers_rank) {
     Module* mod = this->my_modules.at(module_name);
     if (mod) {
-        int mod_position = mod->getPosition();
-        double mod_rel = mod->getReliability();
         //std::cout << "Sending to " << recievers_rank << std::endl;
 
-        MPI_Send(&mod_position, 1, MPI_INT, recievers_rank, 0, MPI_COMM_WORLD);
-        MPI_Send(&mod_rel, 1, MPI_DOUBLE, recievers_rank, 0, MPI_COMM_WORLD);
+        this->communicator.sendInt(mod->getPosition(), recievers_rank);
+        this->communicator.sendDouble(mod->getReliability(), recievers_rank);
 
         //std::cout << "Sent module " << mod->getName() << " " << mod_position << " " << mod_rel << std::endl;
     } else {
@@ -68,13 +67,12 @@ void MPIManager::sendModule(std::string module_name, int recievers_rank) {
 void MPIManager::recvModule(std::string parent_name, int sender) {
     Module* parent = this->my_modules.at(parent_name);
     if (parent) {
-        int son_position;
-        double son_rel;
+        //int son_position;
+        //double son_rel;
 
         //std::cout << "Recieving from " << sender << std::endl;
-
-        MPI_Recv(&son_position, 1, MPI_INT, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        MPI_Recv(&son_rel, 1, MPI_DOUBLE, sender, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        int son_position = this->communicator.recvInt(sender);
+        double son_rel = this->communicator.recvDouble(sender);
         
         parent->setSonsReliability(son_position, son_rel, this->calculated_state);
 
@@ -116,30 +114,14 @@ void MPIManager::complete_instruction(std::string instructions, int state) {
     }
 }
 
-void MPIManager::sendString(std::string message, int recvRank) {
-    int size = message.size() + 1;
-    MPI_Send(&size, 1, MPI_INT, recvRank, 0, MPI_COMM_WORLD);
-    MPI_Send(message.c_str(), size, MPI_CHAR, recvRank, 0, MPI_COMM_WORLD);
-}
-
-void MPIManager::sendInt(int message, int recvRank) {
-    MPI_Send(&message, 1, MPI_INT, recvRank, 0, MPI_COMM_WORLD);
-}
-
-int MPIManager::recvInt(int sendRank) {
-    int message;
-    MPI_Recv(&message, 1, MPI_INT, sendRank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    return message;
-}
-
 void MPIManager::recieveMyModules(int pa_my_assigned_modules, int pa_my_rank, std::string& pa_my_instructions) {
     std::string module_name, module_pla;
     for (int i = 0; i < pa_my_assigned_modules; i++) {
 
-        module_name = this->recvString(0);
-        module_pla = this->recvString(0);
-        pa_my_instructions = this->recvString(0);
-        int var_count = this->recvInt(0);
+        module_name = this->communicator.recvString(0);
+        module_pla = this->communicator.recvString(0);
+        pa_my_instructions = this->communicator.recvString(0);
+        int var_count = this->communicator.recvInt(0);
 
         this->addNewModule(module_name, module_pla, pa_my_rank, var_count);
                     
@@ -147,20 +129,12 @@ void MPIManager::recieveMyModules(int pa_my_assigned_modules, int pa_my_rank, st
 } 
 
 void MPIManager::sendModuleInfo(Module* mod, std::string instructions, int recvRank) {
-    sendString(mod->getName(), recvRank);
-    sendString(mod->getPLA(), recvRank);
-    sendString(instructions, recvRank);
-    sendInt(mod->getVarCount(), recvRank);
+    this->communicator.sendString(mod->getName(), recvRank);
+    this->communicator.sendString(mod->getPLA(), recvRank);
+    this->communicator.sendString(instructions, recvRank);
+    this->communicator.sendInt(mod->getVarCount(), recvRank);
 }
 
-std::string MPIManager::recvString(int sendRank) {
-    int size;
-    char* message;
-    MPI_Recv(&size, 1, MPI_INT, sendRank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    message = (char*)malloc(sizeof(char)*size);
-    MPI_Recv(message, size, MPI_CHAR, sendRank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    return message;
-}
 
 void MPIManager::addNewModule(std::string name, std::string pla, int my_rank, int var_count) {
     Module* temp = new Module(name);
