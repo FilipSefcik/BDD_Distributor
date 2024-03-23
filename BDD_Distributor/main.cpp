@@ -97,6 +97,7 @@ int main(int argc, char* argv[]) {
     // for (int i = 0; i < argc; i++) {
     //     std::cout << "argument: " << argv[i] << std::endl;
     // }
+    
     // Initialize the MPI environment
     MPI_Init(NULL, NULL);
 

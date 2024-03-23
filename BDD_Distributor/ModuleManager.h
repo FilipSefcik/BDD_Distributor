@@ -6,7 +6,6 @@
 #include <regex>
 #include <unordered_map>
 #include <vector>
-#include "Divider.h"
 #include "Module.h"
 
 class ModuleManager
