@@ -6,6 +6,7 @@ add_executable(
         # Node.cpp
         MPIManager.cpp
         MPICommunicator.cpp
+        BDD_Distributor.cpp
 )
 
 find_package(TeDDy REQUIRED)

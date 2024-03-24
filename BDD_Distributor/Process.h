@@ -13,9 +13,9 @@ protected:
 public:
     Process(int rank) : my_rank(rank) {};
     virtual void process_information() = 0;
-    void process_instructions(std::string instructions, int state) {
+    void process_instructions(int state) {
         this->mpiManager.writeToPLA();
-        this->mpiManager.complete_instruction(instructions, state);
+        this->mpiManager.complete_instruction(this->my_instructions, state);
     };
 };
 
@@ -46,7 +46,7 @@ public:
 
         // moduleManager.printAssignedNodes();
 
-        MPI_Scatter(assigned_modules.data(), 1, MPI_INT, &this->my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Scatter(this->assigned_modules.data(), 1, MPI_INT, &this->my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
         
         this->getUsedProcessesCount();
 

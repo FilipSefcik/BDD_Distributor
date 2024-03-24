@@ -4,10 +4,25 @@
 #include "ModuleManager.h"
 #include "Divider.h"
 #include "MPIManager.h"
+#include "BDD_Distributor.h"
 #include <mpi.h>
+#include <string>
 #include <vector>
 
+int main(int argc, char* argv[]) {
+
+    std::string conf_path = argv[1];
+    int divider_flag = std::stoi(argv[2]);
+    int state = std::stoi(argv[3]);
+
+    BDD_Distributor distributor;
+    distributor.set_conf_path(conf_path);
+    distributor.calculate_availability(divider_flag, state);
+    return 0;
+}
+
 // temporary funtions, will be refactored, used for easier reading
+/*
 int getUsedProcessesCount(std::vector<int>* pa_assigned_modules) {
     int count = 0;
     for (int i = 0; i < pa_assigned_modules->size(); i++) {
@@ -40,6 +55,7 @@ void distributeModules(int used_processes_count, int pa_my_rank, std::string& pa
         delete nodes_modules;
     }
 }
+*/
 
 // without MPI
 /*
@@ -89,7 +105,8 @@ int main(int argc, char* argv[]) {
 }*/
 
 
-//with MPI
+// with MPI
+/*
 int main(int argc, char* argv[]) {
 
     // std::cout << argc << std::endl;
@@ -163,3 +180,4 @@ int main(int argc, char* argv[]) {
     MPI_Finalize();
     return 0;
 }
+*/
