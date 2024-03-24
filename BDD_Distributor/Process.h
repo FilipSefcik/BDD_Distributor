@@ -45,7 +45,7 @@ public:
 
 	    this->divider->divideModules(this->moduleManager.getModules(), &this->assigned_modules);  
 
-        moduleManager.printAssignedNodes();
+        //this->moduleManager.printAssignedNodes();
 
         MPI_Scatter(this->assigned_modules.data(), 1, MPI_INT, &this->my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
