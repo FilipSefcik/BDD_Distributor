@@ -9,7 +9,7 @@ read -p "Enter the number of processes: " num_processes
 read -p "Enter the path to the config file: " conf_path
 
 # Prompt user for number of dividers
-read -p "Enter the number of divider: " num_divider
+read -p "Enter the number of divider [var - 0 / node - 1]: " num_divider
 
 read -p "Enter which state you want availability to be calculated [0/1]: " state
 

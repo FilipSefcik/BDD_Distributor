@@ -40,24 +40,18 @@ public:
 
 	    this->moduleManager.load(this->confPath);
 
-        //std::cout << "Loaded\n";
-
         // moduleManager.printModules();
         // moduleManager.printModulePLA();
 
 	    this->divider->divideModules(this->moduleManager.getModules(), &this->assigned_modules);  
-        //std::cout << "Divided\n";
-        // moduleManager.printAssignedNodes();
+
+        moduleManager.printAssignedNodes();
 
         MPI_Scatter(this->assigned_modules.data(), 1, MPI_INT, &this->my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
-        
-        //std::cout << "Scatter\n";
 
         this->getUsedProcessesCount();
 
         this->moduleManager.getInstructions(used_processes_count);
-
-        //std::cout << "Instructions\n";
         
         // moduleManager.printSeparateInstructions();  
 
@@ -97,6 +91,9 @@ public:
 
     void setDivider(int flag) {
         switch (flag) {
+            case 0:
+                divider = new VarCountDivider();
+                break;
             default:
                 divider = new NodeDivider();
                 break;
