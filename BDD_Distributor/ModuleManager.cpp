@@ -146,8 +146,7 @@ ModuleManager::~ModuleManager()
     this->separate_instructions.clear();
 }
 
-void ModuleManager::printModules()
-{
+void ModuleManager::printModules() {
     if (this->modules.empty()) { return; }
 
     for (Module* mod : this->modules) {
@@ -158,8 +157,7 @@ void ModuleManager::printModules()
     }
 }
 
-void ModuleManager::getInstructions(int nodesCount)
-{
+void ModuleManager::getInstructions(int nodesCount) {
     this->separate_instructions.resize(nodesCount > this->modules.size() ?
                                         this->modules.size() : nodesCount);
 

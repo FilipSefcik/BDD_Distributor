@@ -22,7 +22,8 @@ public:
 class MainProcess : public Process {
 private:
     std::vector<int> assigned_modules;  
-    int used_processes_count, process_count = 0;
+    int used_processes_count = 0; 
+    int process_count = 0;
     ModuleManager moduleManager;
     Divider* divider;
     std::string confPath;
@@ -39,23 +40,28 @@ public:
 
 	    this->moduleManager.load(this->confPath);
 
+        //std::cout << "Loaded\n";
+
         // moduleManager.printModules();
         // moduleManager.printModulePLA();
 
 	    this->divider->divideModules(this->moduleManager.getModules(), &this->assigned_modules);  
-
+        //std::cout << "Divided\n";
         // moduleManager.printAssignedNodes();
 
         MPI_Scatter(this->assigned_modules.data(), 1, MPI_INT, &this->my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
         
+        //std::cout << "Scatter\n";
+
         this->getUsedProcessesCount();
 
         this->moduleManager.getInstructions(used_processes_count);
+
+        //std::cout << "Instructions\n";
         
         // moduleManager.printSeparateInstructions();  
 
         this->distributeModules();
-
     }
 
     void getUsedProcessesCount() {
@@ -71,7 +77,7 @@ public:
 
     void distributeModules() {
         //send to each used process
-    for (int i = 0; i < this->used_processes_count; i++) {
+        for (int i = 0; i < this->used_processes_count; i++) {
         //send each module assigned
         std::vector<Module*>* nodes_modules = this->moduleManager.getModulesForNode(i);
             for (int j = 0; j < nodes_modules->size(); j++) {
