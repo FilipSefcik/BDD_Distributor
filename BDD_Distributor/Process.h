@@ -9,7 +9,7 @@ class Process {
 protected:
     MPIManager mpiManager;
     std::string my_instructions;
-    int my_rank, my_assigned_modules_count;
+    int my_rank, assigned_count;
 public:
     Process(int rank) : my_rank(rank) {};
     virtual void process_information() = 0;
@@ -22,7 +22,7 @@ public:
 class MainProcess : public Process {
 private:
     std::vector<int> assigned_modules;  
-    int used_processes_count = 0; 
+    int used_count = 0; 
     int process_count = 0;
     ModuleManager moduleManager;
     Divider* divider;
@@ -47,11 +47,11 @@ public:
 
         //this->moduleManager.printAssignedNodes();
 
-        MPI_Scatter(this->assigned_modules.data(), 1, MPI_INT, &this->my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Scatter(this->assigned_modules.data(), 1, MPI_INT, &this->assigned_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
         this->getUsedProcessesCount();
 
-        this->moduleManager.getInstructions(used_processes_count);
+        this->moduleManager.getInstructions(used_count);
         
         // moduleManager.printSeparateInstructions();  
 
@@ -61,7 +61,7 @@ public:
     void getUsedProcessesCount() {
         for (int i = 0; i < this->assigned_modules.size(); i++) {
             if (this->assigned_modules.at(i) > 0) {
-                this->used_processes_count++;
+                this->used_count++;
             } else {
                 // may be changed depending on what divider will be used
                 break;
@@ -71,7 +71,7 @@ public:
 
     void distributeModules() {
         //send to each used process
-        for (int i = 0; i < this->used_processes_count; i++) {
+        for (int i = 0; i < this->used_count; i++) {
         //send each module assigned
         std::vector<Module*>* nodes_modules = this->moduleManager.getModulesForNode(i);
             for (int j = 0; j < nodes_modules->size(); j++) {
@@ -105,10 +105,10 @@ class SlaveProcess : public Process {
 public:
     SlaveProcess(int rank) : Process(rank) {}
     void process_information() override {
-        MPI_Scatter(nullptr, 1, MPI_INT, &this->my_assigned_modules_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Scatter(nullptr, 1, MPI_INT, &this->assigned_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-        if (this->my_assigned_modules_count > 0) {
-            this->mpiManager.recieveMyModules(this->my_assigned_modules_count, this->my_rank, this->my_instructions);
+        if (this->assigned_count > 0) {
+            this->mpiManager.recieveMyModules(this->assigned_count, this->my_rank, this->my_instructions);
         }
     }
 };
