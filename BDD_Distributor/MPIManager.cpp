@@ -16,24 +16,15 @@ void MPIManager::executeModule(std::string module_name, int module_position) {
         mod->setPosition(module_position);
 
         std::string const& cesta = mod->getPath();
-        teddy::bss_manager bssManager(mod->getVarCount(), 1'000);
-        //std::cout << cesta << std::endl;
+        teddy::bss_manager bssManager(mod->getVarCount(), mod->getVarCount() * 100);
         std::optional<teddy::pla_file> plaSubor = teddy::pla_file::load_file(cesta);
-        //std::cout << "loaded pla " << cesta << std::endl;
-
-        //mod->printSonsReliabilities();
-
         teddy::bss_manager::diagram_t f = bssManager.from_pla(*plaSubor, teddy::fold_type::Left)[0];
-
-        //std::cout << "made a function\n";
 
         const double reliability = this->calculated_state == 1 ? 
                                     bssManager.calculate_availability(1, *mod->getSonsReliability(), f) :
                                     bssManager.calculate_unavailability(1, *mod->getSonsReliability(), f);
 
-        //std::cout << this->calculated_state << std::endl;
         mod->setReliability(reliability);
-        //std::cout << "Module " << mod->getName() << " reliability is " << reliability << " with position " << mod->getPosition() << std::endl;
     } else {
         std::cout << "Module not found.\n";
     }
@@ -44,7 +35,6 @@ void MPIManager::linkModules(std::string parent_name, std::string son_name) {
     Module* son = this->my_modules.at(son_name);
     if (parent && son) {
         parent->setSonsReliability(son->getPosition(), son->getReliability(), this->calculated_state);
-        //std::cout << "Linked modules " << parent->getName() << " <-> " << son->getName() << std::endl;
     } else {
         std::cout << "No module found.\n";
     }
@@ -53,12 +43,8 @@ void MPIManager::linkModules(std::string parent_name, std::string son_name) {
 void MPIManager::sendModule(std::string module_name, int recievers_rank) {
     Module* mod = this->my_modules.at(module_name);
     if (mod) {
-        //std::cout << "Sending to " << recievers_rank << std::endl;
-
         this->communicator.sendInt(mod->getPosition(), recievers_rank);
         this->communicator.sendDouble(mod->getReliability(), recievers_rank);
-
-        //std::cout << "Sent module " << mod->getName() << " " << mod_position << " " << mod_rel << std::endl;
     } else {
         std::cout << "No module found\n";
     }
@@ -67,16 +53,10 @@ void MPIManager::sendModule(std::string module_name, int recievers_rank) {
 void MPIManager::recvModule(std::string parent_name, int sender) {
     Module* parent = this->my_modules.at(parent_name);
     if (parent) {
-        //int son_position;
-        //double son_rel;
-
-        //std::cout << "Recieving from " << sender << std::endl;
         int son_position = this->communicator.recvInt(sender);
         double son_rel = this->communicator.recvDouble(sender);
         
         parent->setSonsReliability(son_position, son_rel, this->calculated_state);
-
-        //std::cout << "Recieved module on position " << son_position << " " << son_rel << std::endl;
     } else {
         std::cout << "No module found\n";
     }
@@ -84,11 +64,6 @@ void MPIManager::recvModule(std::string parent_name, int sender) {
 
 
 void MPIManager::complete_instruction(std::string instructions, int state) {
-    if (state != 0 && state != 1) {
-        std::cout << "Invalid state\n";
-        return;
-    }
-
     this->calculated_state = state;
     
     auto input_string = std::istringstream(instructions);
@@ -142,7 +117,6 @@ void MPIManager::addNewModule(std::string name, std::string pla, int my_rank, in
     temp->setPLA(pla);
     temp->setPath(this->PLA_PATH + "PROCESS " + std::to_string(my_rank) + "/" + name + ".pla");
     this->my_modules.emplace(name, temp);
-    //std::cout << temp->getName() << " " << temp->getVarCount() << std::endl;
 }
 
 void MPIManager::writeToPLA() {

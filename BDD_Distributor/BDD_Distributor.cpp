@@ -32,6 +32,12 @@ void BDD_Distributor::set_conf_path(std::string pa_conf_path) {
 };
 
 void BDD_Distributor::calculate_availability(int divider_flag, int state) {
+    if (state != 0 && state != 1) {
+        std::cerr << "Invalid state" << std::endl;
+        exit(2);
+        return;
+    }
+
     if (this->my_rank == 0 && this->process) {
         MainProcess* mainProcess = dynamic_cast<MainProcess*>(this->process);
         mainProcess->setDivider(divider_flag);
