@@ -1,11 +1,18 @@
 #include "ModuleManager.h"
 #include "Module.h"
 #include <cstdint>
+#include <cstdlib>
+#include <stdexcept>
 #include <vector>
 
 void ModuleManager::load(std::string confPath) {
-    this->loadModules(confPath);
-    this->loadPLA();
+    try {
+        this->loadModules(confPath);
+        this->loadPLA();
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        exit(1);
+    }
 }
 
 void ModuleManager::loadModules(std::string confPath)
@@ -19,7 +26,7 @@ void ModuleManager::loadModules(std::string confPath)
 
     if (not file.is_open())
     {
-        printf("not file open error \n");
+        throw std::runtime_error("Error opening conf file");
         return;
     }
 
@@ -255,11 +262,14 @@ void ModuleManager::loadPLA()
     {
         auto file = std::ifstream(mod->getPath());
 
-        if (file.is_open())
+        if (not file.is_open())
         {
-            std::string file_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-            mod->setPLA(file_content);
+            throw std::runtime_error("Error opening " + mod->getName() + " PLA file");
+            return;
         }
+
+        std::string file_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        mod->setPLA(file_content);
         
         file.close();
 
