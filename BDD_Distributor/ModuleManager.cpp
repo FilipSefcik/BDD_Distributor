@@ -1,5 +1,4 @@
 #include "ModuleManager.h"
-#include "Module.h"
 #include <cstdint>
 #include <cstdlib>
 #include <stdexcept>

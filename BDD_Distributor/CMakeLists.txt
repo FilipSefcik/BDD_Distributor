@@ -3,7 +3,6 @@ add_executable(
         main.cpp
         Module.cpp
         ModuleManager.cpp
-        # Node.cpp
         MPIManager.cpp
         MPICommunicator.cpp
         BDD_Distributor.cpp
@@ -17,4 +16,6 @@ target_link_libraries(
 
 # MPI
 find_package(MPI REQUIRED)
-target_link_libraries(main PUBLIC MPI::MPI_CXX)
+target_link_libraries(
+    main PUBLIC MPI::MPI_CXX
+)
