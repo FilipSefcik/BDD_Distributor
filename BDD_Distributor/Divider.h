@@ -6,21 +6,19 @@
 
 class Divider
 {
-protected:
-    bool flag = false;
 public:
     virtual void divideModules(std::vector<Module*>* modules, std::vector<int>* nodes) {
         if (modules->empty())
         {
-            std::cout << "There are no modules to divide.\n";
-            this->flag = true;
+            std::cerr << "There are no modules to divide.\n";
+            exit(3);
             return;
         }
 
         if (nodes->empty())
         {
-            std::cout << "There are no nodes to divide for.\n";
-            this->flag = true;
+            std::cerr << "There are no nodes to divide for.\n";
+            exit(3);
             return;
         }
     };
@@ -31,8 +29,6 @@ public:
     void divideModules(std::vector<Module*>* modules, std::vector<int>* nodes) override {
         
         Divider::divideModules(modules, nodes);
-
-        if (this->flag) { return; }
 
         int nodeUsed = 0;              
         
@@ -49,8 +45,6 @@ class VarCountDivider : public Divider {
         void divideModules(std::vector<Module*>* modules, std::vector<int>* nodes) override {
         
         Divider::divideModules(modules, nodes);
-
-        if (this->flag) { return; }     
 
         std::vector<int> node_var_count;
         node_var_count.resize(nodes->size());         

@@ -40,20 +40,13 @@ public:
 
 	    this->moduleManager.load(this->confPath);
 
-        // moduleManager.printModules();
-        // moduleManager.printModulePLA();
-
 	    this->divider->divideModules(this->moduleManager.getModules(), &this->assigned_modules);  
-
-        //this->moduleManager.printAssignedNodes();
 
         MPI_Scatter(this->assigned_modules.data(), 1, MPI_INT, &this->assigned_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
         this->getUsedProcessesCount();
 
         this->moduleManager.getInstructions(used_count);
-        
-        // moduleManager.printSeparateInstructions();  
 
         this->distributeModules();
     }
