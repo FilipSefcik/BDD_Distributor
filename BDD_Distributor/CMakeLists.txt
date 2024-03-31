@@ -1,11 +1,11 @@
 add_executable(
     main
         main.cpp
-        Module.cpp
-        ModuleManager.cpp
-        MPIManager.cpp
-        MPICommunicator.cpp
-        BDD_Distributor.cpp
+        module.cpp
+        module_manager.cpp
+        mpi_manager.cpp
+        mpi_communicator.cpp
+        bdd_distributor.cpp
 )
 
 find_package(TeDDy REQUIRED)

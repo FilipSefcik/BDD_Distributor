@@ -30,7 +30,7 @@ state=$(validate_input "$state" 1)
 mpi_command="mpiexec -n $num_processes BDD_Distributor/main $conf_path $num_divider $state"
 
 # Print the constructed command
-echo "Executing command: $mpi_command"
+# echo "Executing command: $mpi_command"
 
 # Execute the mpiexec command
 $mpi_command

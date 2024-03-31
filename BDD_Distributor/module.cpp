@@ -1,19 +1,19 @@
-#include "Module.h"
+#include "module.h"
 
-Module::Module(std::string paName) {
-    this->name = paName;
+module::module(std::string pa_name) {
+    this->name = pa_name;
     this->sons_reliability = new std::vector<std::vector<double>>();
 }
 
-void Module::addSon(Module* newSon)
+void module::add_son(module* new_son)
 {
-    newSon->setParent(this);
-    this->addPriority(newSon->getPriority());
+    new_son->set_parent(this);
+    this->add_priority(new_son->get_priority());
 }
 
-void Module::printSons()
+void module::print_sons()
 {
-    std::cout << "Var count: " << this->varCount << std::endl;
+    std::cout << "Var count: " << this->var_count << std::endl;
     std::cout << "Priority: " << this->priority << std::endl;
 
     for (int i = 0; i < this->sons_reliability->size(); i++)
@@ -27,61 +27,63 @@ void Module::printSons()
 
 }
 
-void Module::addPriority(int sonPriority)
+void module::add_priority(int son_priority)
 {
-    if (this->priority == sonPriority)
+    if (this->priority == son_priority)
     {
         this->priority++;
         if (this->parent) 
         {
-            this->parent->addPriority(this->priority);
+            this->parent->add_priority(this->priority);
         }
     }
 }
 
-void Module::printPLA() {
+void module::print_pla() {
     std::cout << this->pla_file << std::endl;
 }
 
-void Module::setVarCount(int paVarCount) {
-    this->varCount = paVarCount;
-    for (int i = 0; i < this->varCount; i++)
+void module::set_var_count(int pa_var_count) {
+    this->var_count = pa_var_count;
+    for (int i = 0; i < this->var_count; i++)
     {
         this->sons_reliability->push_back({0.5, 0.5});
     }
 }
 
-void Module::setSonsReliability(int sonPosition, double sonRel, int state) {
+void module::set_sons_reliability(int sonPosition, double sonRel, int state) {
     if (sonPosition >= 0 && sonPosition < this->sons_reliability->size()) {
         this->sons_reliability->at(sonPosition).at(state) = sonRel;
         this->sons_reliability->at(sonPosition).at((state + 1) % 2) = 1.0 - sonRel;
     }
 }
 
-void Module::writePLAFile() {
+void module::write_pla_file() {
 
-    std::filesystem::path directoryPath = std::filesystem::path(this->path).parent_path();
+    std::filesystem::path dir_path = std::filesystem::path(this->path).parent_path();
 
-    if (!std::filesystem::exists(directoryPath)) {
-        if (!std::filesystem::create_directories(directoryPath)) {
+    if (!std::filesystem::exists(dir_path)) {
+        if (!std::filesystem::create_directories(dir_path)) {
             std::cerr << "Error creating directories!" << std::endl;
+            exit(4);
             return; // Return an error code
         }
     }
 
-    std::ofstream outputFile(this->path);
+    std::ofstream output_file(this->path);
 
-    if (!outputFile.is_open()) {
+    if (!output_file.is_open()) {
         std::cerr << "Error opening the file!" << std::endl;
+        exit(4);
         return; 
     }
 
-    outputFile << this->pla_file << std::endl;
+    output_file << this->pla_file << std::endl;
 
-    outputFile.close();
+    output_file.close();
 }
 
-void Module::printSonsReliabilities() {
+void module::print_sons_reliabilities() {
     for (int i = 0; i < this->sons_reliability->size(); i++) {
         for (int j = 0; j < this->sons_reliability->at(i).size(); j++) {
             std::cout << this->sons_reliability->at(i).at(j) << " ";
