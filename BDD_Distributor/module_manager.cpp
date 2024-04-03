@@ -50,6 +50,8 @@ void module_manager::load_modules(std::string confPath)
         path = line.substr(space_index + 1, pla_index + 1);
         column = line.substr(pla_index + 5);
 
+//        std::cout << name << " " << path << std::endl;
+
         module* mod = new module(name);
         mod->set_path(path);
         mod->set_function_column(std::stoi(column));
@@ -237,8 +239,10 @@ void module_manager::load_pla()
     {
         auto file = std::ifstream(mod->get_path());
 
+        std::cout << mod->get_name() << " " << mod->get_path() << std::endl;
+
         if (not file.is_open())
-        {
+        {   
             throw std::runtime_error("Error opening " + mod->get_name() + " PLA file");
             return;
         }
