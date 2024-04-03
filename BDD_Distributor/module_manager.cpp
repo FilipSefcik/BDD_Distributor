@@ -30,9 +30,7 @@ void module_manager::load_modules(std::string confPath)
     }
 
     // Read paths to modules
-    auto line = std::string();
-    std::string name, path, column;
-    std::stringstream loaded_word;
+    std::string name, path, column, line;
 
     while (std::getline(file, line))
     {
@@ -58,87 +56,6 @@ void module_manager::load_modules(std::string confPath)
 
         this->module_mapping.emplace(mod->get_name(), this->modules.size());
         this->modules.push_back(mod);
-
-        // for (int i = 0; i < line.size(); i++) {
-        //     if (state == 0) {
-        //         // if (line[i] != ' ') {
-        //         //     loaded_word << line[i];
-        //         // } else {
-        //         //     name = loaded_word.str();
-        //         //     loaded_word.str("");
-        //         //     state++;
-        //         // }
-        //     } else if (state == 1) {
-        //         // if (condition) {
-                
-        //         // }
-        //     }
-        // }
-
-
-        // std::istringstream riadok(line);
-        // riadok >> name;
-        // if (name == "#") {
-        //     continue;
-        // }
-        // std::cout << name << std::endl;
-
-        
-
-        // riadok >> path;
-        // std::cout << path << std::endl;
-
-
-        //std::cout << line.find(".pla") << std::endl;
-        //std::cout << line.at(0) << std::endl;
-        
-        // auto const first
-        //     = std::find_if_not(std::begin(line), std::end(line), is_space);
-        // auto const last = std::end(line);
-        
-        // if (first == last)
-        // {
-        //     // Skip empty line.
-        //     continue;
-        // }
-
-        // if (*first == '#')
-        // {
-        //     // Skip comment.
-        //     continue;
-        // }
-
-        // auto const filetype = line.substr(line.size() - 4);
-        // if (filetype != ".pla")
-        // {
-        //     //not a path to a pla file
-        //     break;
-        // }
-
-        // // Split into (key, val) pair on the first space.
-        // auto const keyLast = std::find_if(first, last, is_space);
-        // auto const valFirst = keyLast == last
-        //     ? last
-        //     : std::find_if_not(keyLast + 1, last, is_space);
-        // auto key = std::string(first, keyLast);
-        // if (valFirst != last)
-        // {
-        //     auto valLast = last;
-        //     while (is_space(*(valLast - 1)))
-        //     {
-        //         --valLast;
-        //     }
-        //     auto val = std::string(valFirst, valLast);
-        //     module* mod = new module(std::move(key));
-        //     mod->set_path(std::move(val));
-
-        //     // size at start is 0, so when we add first module, it will have index 0, so it works
-        //     this->module_mapping.emplace(mod->get_name(), this->modules.size());
-        //     this->modules.push_back(mod);
-
-        //     // since we first added module, size is 1 but index is 0, so we need to discard 1
-        //     // this->module_mapping.emplace(mod->get_name(), this->vector_modules.size() - 1);
-        // }
     }
 
     // Read mapping
