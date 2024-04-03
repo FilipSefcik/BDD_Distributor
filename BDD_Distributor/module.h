@@ -16,6 +16,7 @@ private:
 	int position = 0;
 	int priority = 0; // number of modules between the furthest "child" module and this module
 	int var_count = 0;
+	int function_column = 0;
 	double my_reliability = 0.5;
 public:
 	module(std::string pa_name);
@@ -36,6 +37,7 @@ public:
 	int get_process_rank() { return this->assigned_process; };
 	int get_position() { return this->position; };
     int get_var_count() { return this->var_count; };
+	int get_function_column() { return this->function_column; };
 
 	// setters
 
@@ -50,6 +52,7 @@ public:
 	void set_position(int pa_position) { this->position = pa_position; };
 	void assign_process(int pa_process) { this->assigned_process = pa_process; };
 	void set_var_count(int pa_var_count);
+	void set_function_column(int pa_column) { this->function_column = pa_column; };
 
 	void add_son(module* new_son);
 	void add_priority(int son_priority);

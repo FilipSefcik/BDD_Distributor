@@ -71,7 +71,7 @@ public:
                 module* mod = nodes_modules->at(j);
 
                 if (i == this->my_rank) {
-                    this->mpi_manager_.add_new_module(mod->get_name(), mod->get_pla(), this->my_rank, mod->get_var_count());
+                    this->mpi_manager_.add_new_module(mod->get_name(), mod->get_pla(), this->my_rank, mod->get_var_count(), mod->get_function_column());
                     this->my_instructions = this->module_manager_.get_instructions_for_process(i);
                     continue;
                 }

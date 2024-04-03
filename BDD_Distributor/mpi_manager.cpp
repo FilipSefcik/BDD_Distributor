@@ -17,7 +17,7 @@ void mpi_manager::execute_module(std::string module_name, int module_position) {
         std::string const& path = mod->get_path();
         teddy::bss_manager bss_manager(mod->get_var_count(), mod->get_var_count() * 100);
         std::optional<teddy::pla_file> pla_file = teddy::pla_file::load_file(path);
-        teddy::bss_manager::diagram_t f = bss_manager.from_pla(*pla_file, teddy::fold_type::Left)[0];
+        teddy::bss_manager::diagram_t f = bss_manager.from_pla(*pla_file, teddy::fold_type::Left)[mod->get_function_column()];
 
         const double reliability = this->calculated_state == 1 ? 
                                     bss_manager.calculate_availability(1, *mod->get_sons_reliability(), f) :
@@ -89,15 +89,15 @@ void mpi_manager::complete_instructions(std::string instructions, int state) {
 }
 
 void mpi_manager::recieve_my_modules(int pa_my_assigned_modules, int pa_my_rank, std::string& pa_my_instructions) {
-    std::string module_name, module_pla;
     for (int i = 0; i < pa_my_assigned_modules; i++) {
 
-        module_name = this->communicator.recv_string(0);
-        module_pla = this->communicator.recv_string(0);
+        std::string module_name = this->communicator.recv_string(0);
+        std::string module_pla = this->communicator.recv_string(0);
         pa_my_instructions = this->communicator.recv_string(0);
         int var_count = this->communicator.recv_int(0);
+        int function_column = this->communicator.recv_int(0);
 
-        this->add_new_module(module_name, module_pla, pa_my_rank, var_count);
+        this->add_new_module(module_name, module_pla, pa_my_rank, var_count, function_column);
                     
      }
 } 
@@ -107,12 +107,14 @@ void mpi_manager::send_module_info(module* mod, std::string instructions, int re
     this->communicator.send_string(mod->get_pla(), recvRank);
     this->communicator.send_string(instructions, recvRank);
     this->communicator.send_int(mod->get_var_count(), recvRank);
+    this->communicator.send_int(mod->get_function_column(), recvRank);
 }
 
 
-void mpi_manager::add_new_module(std::string name, std::string pla, int my_rank, int var_count) {
+void mpi_manager::add_new_module(std::string name, std::string pla, int my_rank, int var_count, int function_column) {
     module* temp = new module(name);
     temp->set_var_count(var_count);
+    temp->set_function_column(function_column);
     temp->set_pla(pla);
     temp->set_path(this->pla_path + "PROCESS " + std::to_string(my_rank) + "/" + name + ".pla");
     this->my_modules.emplace(name, temp);

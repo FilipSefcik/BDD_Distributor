@@ -1,4 +1,5 @@
 #include "bdd_distributor.h"
+#include <mpi.h>
 
 bdd_distributor::bdd_distributor() {
     // Initialize the MPI environment

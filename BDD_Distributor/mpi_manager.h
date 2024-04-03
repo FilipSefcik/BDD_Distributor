@@ -27,7 +27,7 @@ public:
 
     void recieve_my_modules(int pa_my_assigned_modules, int pa_my_rank, std::string& pa_my_instructions);
     void complete_instructions(std::string instructions, int state);
-    void add_new_module(std::string name, std::string pla, int my_rank, int var_count);
+    void add_new_module(std::string name, std::string pla, int my_rank, int var_count, int function_column);
 
     void send_module_info(module* mod, std::string instructions, int recievers_rank);
 
