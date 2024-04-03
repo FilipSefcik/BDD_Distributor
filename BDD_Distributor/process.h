@@ -15,7 +15,7 @@ public:
     virtual void process_information() = 0;
     void process_instructions(int state) {
         this->mpi_manager_.write_to_pla();
-        this->mpi_manager_.complete_instruction(this->my_instructions, state);
+        this->mpi_manager_.complete_instructions(this->my_instructions, state);
     };
 };
 

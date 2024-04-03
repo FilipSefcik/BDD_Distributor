@@ -62,7 +62,7 @@ void mpi_manager::recv_module(std::string parent_name, int sender) {
 }
 
 
-void mpi_manager::complete_instruction(std::string instructions, int state) {
+void mpi_manager::complete_instructions(std::string instructions, int state) {
     this->calculated_state = state;
     
     auto input_string = std::istringstream(instructions);

@@ -15,8 +15,7 @@ private:
 	std::vector<std::stringstream*> separate_instructions;
 	std::unordered_map<std::string, int> module_mapping;
 public:
-	~module_manager
-();
+	~module_manager();
 	
 	std::vector<module*>* get_modules() { return &this->modules; };
 	void get_instructions(int process_count);

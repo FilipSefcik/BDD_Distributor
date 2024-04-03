@@ -26,7 +26,7 @@ public:
     void recv_module(std::string parent_name, int sender);
 
     void recieve_my_modules(int pa_my_assigned_modules, int pa_my_rank, std::string& pa_my_instructions);
-    void complete_instruction(std::string instructions, int state);
+    void complete_instructions(std::string instructions, int state);
     void add_new_module(std::string name, std::string pla, int my_rank, int var_count);
 
     void send_module_info(module* mod, std::string instructions, int recievers_rank);
