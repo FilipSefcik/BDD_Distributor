@@ -45,12 +45,9 @@ void module_manager::load_modules(std::string confPath)
             break;
         }
 
-
         name = line.substr(0, space_index);
-        path = line.substr(space_index + 1, pla_index + 1);
+        path = line.substr(space_index + 1, pla_index + 3 - name.length());
         column = line.substr(pla_index + 5);
-
-//        std::cout << name << " " << path << std::endl;
 
         module* mod = new module(name);
         mod->set_path(path);
@@ -238,8 +235,6 @@ void module_manager::load_pla()
     for (module* mod : this->modules)
     {
         auto file = std::ifstream(mod->get_path());
-
-        std::cout << mod->get_name() << " " << mod->get_path() << std::endl;
 
         if (not file.is_open())
         {   
