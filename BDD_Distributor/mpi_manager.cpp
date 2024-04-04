@@ -3,7 +3,7 @@
 void mpi_manager::evaluate(std::string module_name) {
     module* mod = this->my_modules.at(module_name);
     if (mod) {
-        std::cout << "True density: " << mod->get_reliability() << std::endl;
+        std::cout << "Density of " << this->calculated_state << ": " << mod->get_reliability() << std::endl;
     } else {
         std::cout << "module not found.\n";
     }
