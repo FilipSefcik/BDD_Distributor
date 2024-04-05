@@ -42,8 +42,8 @@ void mpi_manager::link_modules(std::string parent_name, std::string son_name) {
 void mpi_manager::send_module(std::string module_name, int recievers_rank) {
     module* mod = this->my_modules.at(module_name);
     if (mod) {
-        this->communicator.send_int(mod->get_position(), recievers_rank);
-        this->communicator.send_double(mod->get_reliability(), recievers_rank);
+        mpi_communicator::send_int(mod->get_position(), recievers_rank);
+        mpi_communicator::send_double(mod->get_reliability(), recievers_rank);
     } else {
         std::cout << "No module found\n";
     }
@@ -52,8 +52,8 @@ void mpi_manager::send_module(std::string module_name, int recievers_rank) {
 void mpi_manager::recv_module(std::string parent_name, int sender) {
     module* parent = this->my_modules.at(parent_name);
     if (parent) {
-        int son_position = this->communicator.recv_int(sender);
-        double son_rel = this->communicator.recv_double(sender);
+        int son_position = mpi_communicator::recv_int(sender);
+        double son_rel = mpi_communicator::recv_double(sender);
         
         parent->set_sons_reliability(son_position, son_rel, this->calculated_state);
     } else {
@@ -91,11 +91,11 @@ void mpi_manager::complete_instructions(std::string instructions, int state) {
 void mpi_manager::recieve_my_modules(int pa_my_assigned_modules, int pa_my_rank, std::string& pa_my_instructions) {
     for (int i = 0; i < pa_my_assigned_modules; i++) {
 
-        std::string module_name = this->communicator.recv_string(0);
-        std::string module_pla = this->communicator.recv_string(0);
-        pa_my_instructions = this->communicator.recv_string(0);
-        int var_count = this->communicator.recv_int(0);
-        int function_column = this->communicator.recv_int(0);
+        std::string module_name = mpi_communicator::recv_string(0);
+        std::string module_pla = mpi_communicator::recv_string(0);
+        pa_my_instructions = mpi_communicator::recv_string(0);
+        int var_count = mpi_communicator::recv_int(0);
+        int function_column = mpi_communicator::recv_int(0);
 
         this->add_new_module(module_name, module_pla, pa_my_rank, var_count, function_column);
                     
@@ -103,11 +103,11 @@ void mpi_manager::recieve_my_modules(int pa_my_assigned_modules, int pa_my_rank,
 } 
 
 void mpi_manager::send_module_info(module* mod, std::string instructions, int recvRank) {
-    this->communicator.send_string(mod->get_name(), recvRank);
-    this->communicator.send_string(mod->get_pla(), recvRank);
-    this->communicator.send_string(instructions, recvRank);
-    this->communicator.send_int(mod->get_var_count(), recvRank);
-    this->communicator.send_int(mod->get_function_column(), recvRank);
+    mpi_communicator::send_string(mod->get_name(), recvRank);
+    mpi_communicator::send_string(mod->get_pla(), recvRank);
+    mpi_communicator::send_string(instructions, recvRank);
+    mpi_communicator::send_int(mod->get_var_count(), recvRank);
+    mpi_communicator::send_int(mod->get_function_column(), recvRank);
 }
 
 

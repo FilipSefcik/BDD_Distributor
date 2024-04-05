@@ -11,7 +11,6 @@
 
 class mpi_manager {
 private:
-    mpi_communicator communicator;
     std::unordered_map<std::string, module*> my_modules;
     std::string pla_path = "MOD_PLA/";
     int calculated_state = 1;
