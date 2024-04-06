@@ -1,7 +1,4 @@
 #include "module_manager.h"
-#include <cstdint>
-#include <functional>
-#include <string>
 
 
 void module_manager::load(std::string confPath) {

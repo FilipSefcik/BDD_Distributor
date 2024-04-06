@@ -6,6 +6,9 @@
 #include <regex>
 #include <unordered_map>
 #include <vector>
+#include <cstdint>
+#include <functional>
+#include <string>
 #include "module.h"
 
 class module_manager

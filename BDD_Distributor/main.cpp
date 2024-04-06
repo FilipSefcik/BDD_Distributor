@@ -1,6 +1,4 @@
 #include "bdd_distributor.h"
-#include <mpi.h>
-#include <string>
 
 int main(int argc, char* argv[]) {
     std::string conf_path = argc > 1 ? argv[1] : "module_map.conf";

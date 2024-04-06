@@ -1,10 +1,4 @@
 #include "bdd_distributor.h"
-#include "mpi_communicator.h"
-#include <cstddef>
-#include <cstdint>
-#include <mpi.h>
-#include <vector>
-#include <limits>
 
 bdd_distributor::bdd_distributor() {
     // Initialize the MPI environment
