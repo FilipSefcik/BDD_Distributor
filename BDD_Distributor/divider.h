@@ -1,8 +1,6 @@
 #pragma once
 #include "module.h"
 #include <cstdint>
-#include <iostream>
-#include <vector>
 
 class divider
 {

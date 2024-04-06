@@ -1,10 +1,6 @@
 #pragma once
 #include <cstddef>
-#include <cstdint>
-#include <mpi.h>
-#include <vector>
 #include <limits>
-#include <mpi.h>
 #include "process.h"
 #include "mpi_communicator.h"
 

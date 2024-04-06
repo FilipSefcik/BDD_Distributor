@@ -1,6 +1,4 @@
 #pragma once
-#include <vector>
-#include <iostream>
 #include "module_manager.h"
 #include "divider.h"
 #include "mpi_manager.h"
