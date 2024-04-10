@@ -3,14 +3,16 @@
 # Function to validate input
 validate_input() {
     local input=$1
-    local max_value=$2
-    while [[ $input -lt 0 || $input -gt $max_value ]]; do
-        read -p "Invalid input. Please enter a number between 0 and $max_value: " input
+    local min_value=$2
+    local max_value=$3
+    while [[ ! $input =~ ^[0-9]+$ || $input -lt min_value || $input -gt $max_value ]]; do
+        read -p "Invalid input. Please enter a number between $min_value and $max_value: " input
     done
     echo "$input"
 }
 
 # Function to validate char input
+# Usage: validate_char_input "$input" "y" "n" for 'y' or 'n'
 validate_char_input() {
     local input=$1
     local param1=$2
@@ -46,8 +48,6 @@ get_count() {
     echo "$count $command_switch"
 }
 
-# Usage: validate_char_input "$input" "y" "n" for 'y' or 'n'
-
 read -p "Do you want to use a threads or cores? (t/C): " thread_or_core
 thread_or_core=$(validate_char_input "$thread_or_core" "t" "c")
 
@@ -57,17 +57,17 @@ command_switch=$(echo "$result" | awk '{print $2}')
 
 # Prompt user for number of processes
 read -p "Enter the number of processes: " num_processes
-num_processes=$(validate_input "$num_processes" "$available_count")
+num_processes=$(validate_input "$num_processes" 1 "$available_count")
 
 # Prompt user for path to config file
 read -p "Enter the path to the config file: " conf_path
 
 # Prompt user for number of dividers
 read -p "Enter the number of divider [var - 0 / node - 1]: " num_divider
-num_divider=$(validate_input "$num_divider" 1)
+num_divider=$(validate_input "$num_divider" 0 1)
 
 read -p "Enter which state you want availability to be calculated [0/1]: " state
-state=$(validate_input "$state" 1)
+state=$(validate_input "$state" 0 1)
 
 # Prompt user if they want to use a timer
 read -p "Do you want to use a timer? (y/N): " use_timer

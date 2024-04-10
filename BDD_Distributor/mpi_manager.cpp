@@ -63,26 +63,26 @@ void mpi_manager::recv_module(std::string parent_name, int sender) {
 
 
 void mpi_manager::complete_instructions(std::string instructions, int state) {
+
     this->calculated_state = state;
-    
+
     auto input_string = std::istringstream(instructions);
 
-    std::string keyWord, paramFirst, paramSecond;
+    std::string key_word, param_first, param_second;
 
-    while (input_string >> keyWord) {
-        if (keyWord == "END") {
-            input_string >> paramFirst;
-            this->evaluate(paramFirst);
+    while (input_string >> key_word) {
+        if (key_word == "END") {
+            this->evaluate(param_first);
         } else {
-            input_string >> paramFirst >> paramSecond;
-            if (keyWord == "EXEC") {
-                this->execute_module(paramFirst, std::stoi(paramSecond));
-            } else if (keyWord == "LINK") {
-                this->link_modules(paramFirst, paramSecond);
-            } else if (keyWord == "SEND") {
-                this->send_module(paramFirst, std::stoi(paramSecond));
-            } else if (keyWord == "RECV") {
-                this->recv_module(paramFirst, std::stoi(paramSecond));
+            input_string >> param_first >> param_second;
+            if (key_word == "EXEC") {
+                this->execute_module(param_first, std::stoi(param_second));
+            } else if (key_word == "LINK") {
+                this->link_modules(param_first, param_second);
+            } else if (key_word == "SEND") {
+                this->send_module(param_first, std::stoi(param_second));
+            } else if (key_word == "RECV") {
+                this->recv_module(param_first, std::stoi(param_second));
             }
         }
     }
