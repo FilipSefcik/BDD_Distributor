@@ -1,3 +1,0 @@
-/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/CMakeFiles/rebuild_cache.dir
-/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/CMakeFiles/edit_cache.dir
-/home/sefcik1/BP_projects/BDD_Distributor/BDD_Distributor/CMakeFiles/main.dir

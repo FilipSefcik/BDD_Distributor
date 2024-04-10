@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -DNDEBUG -rdynamic -Wl,-rpath -Wl,/usr/local/lib -Wl,--enable-new-dtags CMakeFiles/main.dir/main.o CMakeFiles/main.dir/module.o CMakeFiles/main.dir/module_manager.o CMakeFiles/main.dir/mpi_manager.o CMakeFiles/main.dir/mpi_communicator.o CMakeFiles/main.dir/bdd_distributor.o -o main  -Wl,-rpath,/usr/local/lib /usr/local/lib/libmpi.so 
