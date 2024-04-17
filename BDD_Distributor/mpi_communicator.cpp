@@ -34,3 +34,11 @@ std::string mpi_communicator::recv_string(int sender_rank) {
     MPI_Recv(message, size, MPI_CHAR, sender_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     return message;
 }
+
+void mpi_communicator::scatter_ints(int* message, int *recieve_buffer) {
+    MPI_Scatter(message, 1, MPI_INT, recieve_buffer, 1, MPI_INT, 0, MPI_COMM_WORLD);
+}
+
+void mpi_communicator::gather_doubles(double* message, double* recieve_buffer) {
+    MPI_Gather(message, 1, MPI_DOUBLE, recieve_buffer, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+}

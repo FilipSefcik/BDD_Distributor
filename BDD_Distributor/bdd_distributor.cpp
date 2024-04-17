@@ -1,4 +1,5 @@
 #include "bdd_distributor.h"
+#include "mpi_communicator.h"
 
 bdd_distributor::bdd_distributor() {
     // Initialize the MPI environment
@@ -55,10 +56,10 @@ void bdd_distributor::get_max_time() {
     std::vector<double> start_times, end_times;
     start_times.resize(this->process_count);
     end_times.resize(this->process_count);
-
-    MPI_Gather(&this->start_time, 1, MPI_DOUBLE, start_times.data(), 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    MPI_Gather(&this->end_time, 1, MPI_DOUBLE, end_times.data(), 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     
+    mpi_communicator::gather_doubles(&this->start_time, start_times.data());
+    mpi_communicator::gather_doubles(&this->end_time, end_times.data());
+
     if (this->my_rank == 0) {
         min_start = std::numeric_limits<double>::max();
         max_end = std::numeric_limits<double>::min();

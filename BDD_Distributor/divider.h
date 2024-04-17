@@ -5,17 +5,10 @@
 class divider
 {
 public:
-    virtual void divide_modules(std::vector<module*>* modules, std::vector<int>* nodes) {
+    virtual void divide_modules(std::vector<module*>* modules, std::vector<module*> nodes[], std::vector<int>* count) {
         if (modules->empty())
         {
             std::cerr << "There are no modules to divide.\n";
-            exit(3);
-            return;
-        }
-
-        if (nodes->empty())
-        {
-            std::cerr << "There are no nodes to divide for.\n";
             exit(3);
             return;
         }
@@ -24,28 +17,29 @@ public:
 
 class node_divider : public divider {
 public:
-    void divide_modules(std::vector<module*>* modules, std::vector<int>* nodes) override {
+    void divide_modules(std::vector<module*>* modules, std::vector<module*> nodes[], std::vector<int>* count) override {
         
-        divider::divide_modules(modules, nodes);
+        divider::divide_modules(modules, nodes, count);
 
         int node_used = 0;              
         
         for (module* mod : *modules) {
-            nodes->at(node_used)++;
+            nodes[node_used].push_back(mod);
+            count->at(node_used)++;
             mod->assign_process(node_used);
-            node_used = (node_used + 1) % nodes->size();
+            node_used = (node_used + 1) % count->size();
         }
     }
 };
 
 class var_count_divider : public divider {
     public:
-        void divide_modules(std::vector<module*>* modules, std::vector<int>* nodes) override {
+        void divide_modules(std::vector<module*>* modules, std::vector<module*> nodes[], std::vector<int>* count) override {
         
-        divider::divide_modules(modules, nodes);
+        divider::divide_modules(modules, nodes, count);
 
         std::vector<int> node_var_count;
-        node_var_count.resize(nodes->size());         
+        node_var_count.resize(count->size());         
 
         std::sort(modules->begin(), modules->end(), [](module* a, module* b) { return a->get_var_count() > b->get_var_count(); });
         
@@ -64,7 +58,8 @@ class var_count_divider : public divider {
                 }
             }
             node_var_count.at(node_used) += mod_var_count;
-            nodes->at(node_used)++;
+            nodes[node_used].push_back(mod);
+            count->at(node_used)++;
             mod->assign_process(node_used);
         }
     }
