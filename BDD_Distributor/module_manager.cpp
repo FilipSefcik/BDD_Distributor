@@ -185,16 +185,6 @@ std::string module_manager::get_instructions_for_process(int process_rank) {
     return "INVALID RANK";
 }
 
-std::vector<module*>* module_manager::get_modules_for_process(int process_rank) {
-    std::vector<module*>* nodes_modules = new std::vector<module*>();
-    for (module* mod : this->modules) {
-        if (mod->get_process_rank() == process_rank) {
-            nodes_modules->push_back(mod);
-        }
-    }
-    return nodes_modules;
-}
-
 void module_manager::print_assigned_processes()
 {
     if (this->modules.empty()) { return; }
