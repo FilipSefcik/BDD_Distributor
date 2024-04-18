@@ -21,12 +21,12 @@ public:
 
 class main_process : public process {
 private:
-    std::vector<int> assigned_modules_count;  
     int used_count = 0; 
     int process_count = 0;
     module_manager module_manager_;
     divider* divider_;
     std::string conf_path;
+    std::vector<int> assigned_modules_count;  
     std::vector<module*>* assigned_modules;
 
 public:
