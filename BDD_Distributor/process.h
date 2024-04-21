@@ -5,6 +5,9 @@
 #include "mpi_manager.h"
 #include <cstddef>
 
+/*
+* @brief described basic functions of any process
+*/
 class process {
 protected:
     mpi_manager mpi_manager_;
@@ -19,6 +22,9 @@ public:
     };
 };
 
+/*
+* @brief main_process's job is to load, divide and distribute modules from config file
+*/
 class main_process : public process {
 private:
     int used_count = 0; 
@@ -36,6 +42,9 @@ public:
 
     void set_conf_path(std::string path) { this->conf_path = path; };
 
+    /*
+    * @brief loads, assigns and distribute modules
+    */
     void process_information() override {
         this->assigned_modules_count.resize(this->process_count);
         this->assigned_modules = new std::vector<module*>[this->process_count];
@@ -59,6 +68,9 @@ public:
                             this->process_count;
     }
 
+    /*
+    * @brief sends assigned modules to their assigned process
+    */
     void distribute_modules() {
         //send to each used process
         for (int i = 0; i < this->used_count; i++) {
@@ -90,9 +102,17 @@ public:
     }
 };
 
+/*
+* @brief represents the rest of processes that are not main.
+*
+* Their only job is to complete assigned instructions with assigned modules.
+*/
 class slave_process : public process {
 public:
     slave_process(int rank) : process(rank) {}
+    /*
+    * @brief recieves modules with instructions from main_process
+    */
     void process_information() override {
         mpi_communicator::scatter_ints(nullptr, &this->assigned_count);
 

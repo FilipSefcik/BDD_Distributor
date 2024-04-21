@@ -2,8 +2,12 @@
 #include "module.h"
 #include <cstdint>
 
-class divider
-{
+/*
+* @brief divider assigns modules from prameter to processing nodes 
+*
+* Basic divider only checks wheter there are modules that can be divided.
+*/
+class divider {
 public:
     virtual void divide_modules(std::vector<module*>* modules, std::vector<module*> nodes[], std::vector<int>* count) {
         if (modules->empty())
@@ -15,6 +19,9 @@ public:
     };
 };
 
+/*
+* @brief Divides modules among nodes evenly based on no particular property
+*/
 class node_divider : public divider {
 public:
     void divide_modules(std::vector<module*>* modules, std::vector<module*> nodes[], std::vector<int>* count) override {
@@ -32,6 +39,9 @@ public:
     }
 };
 
+/*
+* @brief Divides modules among nodes evenly based on how many variables modules have.
+*/
 class var_count_divider : public divider {
     public:
         void divide_modules(std::vector<module*>* modules, std::vector<module*> nodes[], std::vector<int>* count) override {

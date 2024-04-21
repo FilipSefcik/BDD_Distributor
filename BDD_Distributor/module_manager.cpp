@@ -1,5 +1,18 @@
 #include "module_manager.h"
 
+module_manager::~module_manager() {
+    for (int i = 0; i < this->modules.size(); i++) {
+        delete this->modules.at(i);
+    }
+
+    for (int i = 0; i < this->separate_instructions.size(); i++)
+    {
+        delete this->separate_instructions.at(i);
+    }
+
+    this->modules.clear();
+    this->separate_instructions.clear();
+}
 
 void module_manager::load(std::string confPath) {
     try {
@@ -11,8 +24,7 @@ void module_manager::load(std::string confPath) {
     }
 }
 
-void module_manager::load_modules(std::string confPath)
-{
+void module_manager::load_modules(std::string confPath) {
     auto constexpr is_space = [](auto const character)
         {
             return static_cast<bool>(std::isspace(character));
@@ -26,7 +38,7 @@ void module_manager::load_modules(std::string confPath)
         return;
     }
 
-    // Read paths to modules
+    // Read paths to modules and create all modules
     std::string name, path, column, line;
 
     while (std::getline(file, line))
@@ -54,7 +66,7 @@ void module_manager::load_modules(std::string confPath)
         this->modules.push_back(mod);
     }
 
-    // Read mapping
+    // Read mapping and connect modules between each other
     do
     {
         auto const first
@@ -65,6 +77,9 @@ void module_manager::load_modules(std::string confPath)
             // Skip empty line.
             continue;
         }
+
+        // key == module name
+        // val == mapping of modules and variables for this module
 
         auto const keyLast = std::find_if(first, last, is_space);
         auto const valFirst = keyLast == last
@@ -109,32 +124,34 @@ void module_manager::load_modules(std::string confPath)
     } while (std::getline(file, line));
 }
 
-module_manager::~module_manager()
-{
-    for (int i = 0; i < this->modules.size(); i++) {
-        delete this->modules.at(i);
-    }
-
-    for (int i = 0; i < this->separate_instructions.size(); i++)
-    {
-        delete this->separate_instructions.at(i);
-    }
-
-    this->modules.clear();
-    this->separate_instructions.clear();
-}
-
-void module_manager::print_modules() {
+void module_manager::load_pla() {
     if (this->modules.empty()) { return; }
 
-    for (module* mod : this->modules) {
-        std::cout << mod->get_name() << " " << mod->get_path() << "\n";
-        std::cout << "My position: " << mod->get_position() << "\n";
-        mod->print_sons();
-        std::cout << "\n";
+    for (module* mod : this->modules)
+    {
+        auto file = std::ifstream(mod->get_path());
+
+        if (not file.is_open())
+        {   
+            throw std::runtime_error("Error opening " + mod->get_name() + " PLA file");
+            return;
+        }
+
+        std::string file_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        mod->set_pla(file_content);
+        
+        file.close();
+
     }
 }
 
+/*
+* @brief creates instructions on how to process all modules
+* @param number of all processes
+*
+* Creates separate instructions for each preocess. 
+* Instructions consist of: Executing module, Sending moodule, Recieving module, Link modules, End of processing
+*/
 void module_manager::get_instructions(int process_count) {
     this->separate_instructions.resize(process_count > this->modules.size() ?
                                         this->modules.size() : process_count);
@@ -178,6 +195,11 @@ void module_manager::get_instructions(int process_count) {
     }
 }
 
+/*
+* @brief returns instructions assigned to process from parameter
+* @param rank of prcess we want instructions for
+* @return instructions as a string
+*/
 std::string module_manager::get_instructions_for_process(int process_rank) {
     if (process_rank >= 0 && process_rank < this->separate_instructions.size()) {
         return this->separate_instructions.at(process_rank)->str();
@@ -185,8 +207,18 @@ std::string module_manager::get_instructions_for_process(int process_rank) {
     return "INVALID RANK";
 }
 
-void module_manager::print_assigned_processes()
-{
+void module_manager::print_modules() {
+    if (this->modules.empty()) { return; }
+
+    for (module* mod : this->modules) {
+        std::cout << mod->get_name() << " " << mod->get_path() << "\n";
+        std::cout << "My position: " << mod->get_position() << "\n";
+        mod->print_sons();
+        std::cout << "\n";
+    }
+}
+
+void module_manager::print_assigned_processes() {
     if (this->modules.empty()) { return; }
 
     for (module* mod : this->modules)
@@ -195,8 +227,7 @@ void module_manager::print_assigned_processes()
     }
 }
 
-void module_manager::print_separate_instructions()
-{
+void module_manager::print_separate_instructions() {
     for (int i = 0; i < this->separate_instructions.size(); i++)
     {
         std::cout << "Node " << i << " instructions:\n";
@@ -204,8 +235,7 @@ void module_manager::print_separate_instructions()
     }
 }
 
-void module_manager::print_module_pla()
-{
+void module_manager::print_module_pla() {
     for (module* mod : this->modules)
     {
         std::cout << mod->get_name() << std::endl;
@@ -213,27 +243,4 @@ void module_manager::print_module_pla()
         std::cout << std::endl;
     }
 }
-
-void module_manager::load_pla()
-{
-    if (this->modules.empty()) { return; }
-
-    for (module* mod : this->modules)
-    {
-        auto file = std::ifstream(mod->get_path());
-
-        if (not file.is_open())
-        {   
-            throw std::runtime_error("Error opening " + mod->get_name() + " PLA file");
-            return;
-        }
-
-        std::string file_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-        mod->set_pla(file_content);
-        
-        file.close();
-
-    }
-}
-
 

@@ -2,6 +2,9 @@
 #include <string>
 #include <mpi.h>
 
+/*
+* @brief mpi_communicator simplifies usage of MPI message functions
+*/
 class mpi_communicator
 {
 public:

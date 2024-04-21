@@ -4,7 +4,13 @@
 #include "process.h"
 #include "mpi_communicator.h"
 
-
+/*
+* @brief bdd_distributor is used as an interface to control processing of config file
+*
+* You can set a path to config file, 
+* start calculating availability where you define used divider, value that you want to be calculated and usage of timer,
+* recieve the time of how long the calculating took.
+*/
 class bdd_distributor 
 {
 private:

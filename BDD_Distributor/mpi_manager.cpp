@@ -1,5 +1,13 @@
 #include "mpi_manager.h"
 
+mpi_manager::~mpi_manager() {
+    for (auto& pair : this->my_modules) { 
+        delete pair.second; 
+    }
+
+    my_modules.clear();
+}
+
 void mpi_manager::evaluate(std::string module_name) {
     module* mod = this->my_modules.at(module_name);
     if (mod) {
@@ -61,7 +69,6 @@ void mpi_manager::recv_module(std::string parent_name, int sender) {
     }
 }
 
-
 void mpi_manager::complete_instructions(std::string instructions, int state) {
 
     this->calculated_state = state;
@@ -110,7 +117,6 @@ void mpi_manager::send_module_info(module* mod, std::string instructions, int re
     mpi_communicator::send_int(mod->get_function_column(), recvRank);
 }
 
-
 void mpi_manager::add_new_module(std::string name, std::string pla, int my_rank, int var_count, int function_column) {
     module* temp = new module(name);
     temp->set_var_count(var_count);
@@ -124,14 +130,6 @@ void mpi_manager::write_to_pla() {
     for (auto& pair : this->my_modules) { 
         pair.second->write_pla_file(); 
     }
-}
-
-mpi_manager::~mpi_manager() {
-    for (auto& pair : this->my_modules) { 
-        delete pair.second; 
-    }
-
-    my_modules.clear();
 }
 
 void mpi_manager::print_my_modules(int my_rank) {

@@ -30,6 +30,7 @@ validate_char_input() {
     echo "$input"
 }
 
+# Function to get how many processed can be used depending on usage of cores or threads
 get_count() {
     local input=$1
     local count=0
@@ -48,6 +49,7 @@ get_count() {
     echo "$count $command_switch"
 }
 
+# Prompt user for usage of threads or cores
 read -p "Do you want to use a threads or cores? (t/C): " thread_or_core
 thread_or_core=$(validate_char_input "$thread_or_core" "t" "c")
 
@@ -66,6 +68,7 @@ read -p "Enter the path to the config file: " conf_path
 read -p "Enter the number of divider [var - 0 / node - 1]: " num_divider
 num_divider=$(validate_input "$num_divider" 0 1)
 
+# Prompt user for state which availability will be calculated
 read -p "Enter which state you want availability to be calculated [0/1]: " state
 state=$(validate_input "$state" 0 1)
 
@@ -75,11 +78,6 @@ use_timer=$(validate_char_input "$use_timer" "y" "n")
 
 # Construct mpiexec command
 mpi_command="mpiexec $command_switch -n $num_processes BDD_Distributor/main $conf_path $num_divider $state $use_timer"
-
-# pre použitie threadov použi --use-hwthread-cpus
-
-# Print the constructed command
-# echo "Executing command: $mpi_command"
 
 # Execute the mpiexec command
 $mpi_command

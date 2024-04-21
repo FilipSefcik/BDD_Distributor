@@ -6,6 +6,12 @@
 #include <filesystem>
 #include <fstream>
 
+/*
+* @brief Class module describes a module in config file 
+*
+* It's a bniary function described by PLA file but 
+* each variable can have different probability of 1 and 0.
+*/
 class module
 {
 private:
@@ -54,9 +60,13 @@ public:
 	void set_var_count(int pa_var_count);
 	void set_function_column(int pa_column) { this->function_column = pa_column; };
 
+	// special functions
+
 	void add_son(module* new_son);
 	void add_priority(int son_priority);
 
+	// prints used to get info
+	// used only during troubleshooting
 
 	void print_pla();
 	void print_sons();
