@@ -1,5 +1,5 @@
 add_executable(
-    main
+    bdd_parallel
         main.cpp
         module.cpp
         module_manager.cpp
@@ -11,11 +11,11 @@ add_executable(
 find_package(TeDDy REQUIRED)
 
 target_link_libraries(
-    main PRIVATE teddy::teddy
+    bdd_parallel PRIVATE teddy::teddy
 )
 
 # MPI
 find_package(MPI REQUIRED)
 target_link_libraries(
-    main PUBLIC MPI::MPI_CXX
+    bdd_parallel PUBLIC MPI::MPI_CXX
 )

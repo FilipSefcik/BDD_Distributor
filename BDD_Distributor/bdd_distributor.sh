@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PMIX_MCA_pcompress_base_silence_warning=1
+
 # Function to validate input
 validate_input() {
     local input=$1
@@ -49,6 +51,29 @@ get_count() {
     echo "$count $command_switch"
 }
 
+# Function to ask for a file path and check if the file exists
+get_file() {
+    #local input=$1
+    local file_path
+
+    read -p "Enter the path to the $1: " file_path
+
+    # Loop until a valid file path is provided
+    while [ ! -f "$file_path" ]; do
+        read -p "Path to $file_path does not exist. Enter the path to the $1: " file_path
+    done
+    
+    echo "$file_path"
+}
+
+path_to_main="bdd_parallel"
+
+# Check if the file bdd_parallel.exe exists in the current directory
+if [ ! -f "$path_to_main" ] && [ ! -f "$path_to_main.exe" ]; then
+    echo "bdd_parallel.exe not found in the current directory."
+    path_to_main=$(get_file "bdd_parallel.exe")
+fi
+
 # Prompt user for usage of threads or cores
 read -p "Do you want to use a threads or cores? (t/C): " thread_or_core
 thread_or_core=$(validate_char_input "$thread_or_core" "t" "c")
@@ -62,7 +87,7 @@ read -p "Enter the number of processes: " num_processes
 num_processes=$(validate_input "$num_processes" 1 "$available_count")
 
 # Prompt user for path to config file
-read -p "Enter the path to the config file: " conf_path
+conf_path=$(get_file "config file")
 
 # Prompt user for number of dividers
 read -p "Enter the number of divider [var - 0 / node - 1]: " num_divider
@@ -77,7 +102,7 @@ read -p "Do you want to use a timer? (y/N): " use_timer
 use_timer=$(validate_char_input "$use_timer" "y" "n")
 
 # Construct mpiexec command
-mpi_command="mpiexec $command_switch -n $num_processes BDD_Distributor/main $conf_path $num_divider $state $use_timer"
+mpi_command="mpiexec $command_switch -n $num_processes $path_to_main $conf_path $num_divider $state $use_timer"
 
 # Execute the mpiexec command
 $mpi_command
