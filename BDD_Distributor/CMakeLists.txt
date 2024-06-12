@@ -6,6 +6,8 @@ add_executable(
         mpi_manager.cpp
         mpi_communicator.cpp
         bdd_distributor.cpp
+        merger.cpp
+        pla_function.cpp
 )
 
 find_package(TeDDy REQUIRED)

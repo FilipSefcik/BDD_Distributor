@@ -4,6 +4,7 @@
 #include <regex>
 #include <cstdint>
 #include <functional>
+#include <vector>
 #include "module.h"
 
 /*
