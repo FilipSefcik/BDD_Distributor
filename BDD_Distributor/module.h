@@ -5,6 +5,7 @@
 #include <vector>
 #include <filesystem>
 #include <fstream>
+#include "pla_function.h"
 
 /*
 * @brief Class module describes a module in config file 
@@ -24,6 +25,8 @@ private:
 	int var_count = 0;
 	int function_column = 0;
 	double my_reliability = 0.5;
+	std::unordered_map<std::string, int> sons_map;
+	pla_function* function;
 public:
 	module(std::string pa_name);
 	~module(){ delete this->sons_reliability; };
@@ -31,6 +34,7 @@ public:
 	// getters
 
 	module* get_parent() { return this->parent; };
+	pla_function* get_pla_function() { return this->function; };
 
 	std::string get_name() { return this->name; };
 	std::string get_path() { return this->path; };
@@ -67,6 +71,12 @@ public:
 
 	// prints used to get info
 	// used only during troubleshooting
+
+
+	int get_son_position(std::string son_name) { return this->sons_map.at(son_name); };
+	void add_son_position(std::string son_name, int position) { this->sons_map.emplace(son_name, position); };
+	void edit_position(std::string son_name, int new_position) { this->sons_map.at(son_name) = new_position; };
+
 
 	void print_pla();
 	void print_sons();

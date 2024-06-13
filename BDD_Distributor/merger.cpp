@@ -1,4 +1,5 @@
 #include "merger.h"
+#include "pla_function.h"
 
 void merger::merge_pla() {
     std::string path = "Merging/big_pla1.pla";
@@ -41,13 +42,25 @@ void merger::merge_pla() {
         std::string line;
 
         output_file << mod->get_name() << "\n";
+        int var_count;
+        pla_function* mod_fun = mod->get_pla_function();
 
         while (std::getline(input_file, line))
         {   
             char first = line[0];
             if (first == '.' || first == '#' || line.empty()) {
+                if (line[1] == 'i') {
+                    var_count = line[3] - '0';
+                }
                 continue;
             }
+
+            std::string variables = line.substr(0, var_count);
+            int value = std::stoi(line.substr(var_count + 1));
+
+            mod_fun->add_line(variables, value);
+
+
             output_file << line << "\n";
 
 
@@ -57,9 +70,8 @@ void merger::merge_pla() {
 
         }
 
-
-
-
+        std::cout << mod->get_name() << std::endl;
+        mod_fun->print_function();
 
     }
 

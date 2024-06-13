@@ -116,6 +116,7 @@ void module_manager::load_modules(std::string confPath) {
                     }
                     this->modules.at(this->module_mapping.at(moduleName.str()))->set_position(position);
                     this->modules.at(this->module_mapping.at(key))->add_son(this->modules.at(this->module_mapping.at(moduleName.str())));
+                    this->modules.at(this->module_mapping.at(key))->add_son_position(moduleName.str(), position);
                 }
             }
             this->modules.at(this->module_mapping.at(key))->set_var_count(val.size() - digits);

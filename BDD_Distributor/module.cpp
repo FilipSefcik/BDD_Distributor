@@ -1,8 +1,10 @@
 #include "module.h"
+#include "pla_function.h"
 
 module::module(std::string pa_name) {
     this->name = pa_name;
     this->sons_reliability = new std::vector<std::vector<double>>();
+    this->function = new pla_function;
 }
 
 /*

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <iostream>
 
 class pla_function
 {
@@ -11,6 +12,10 @@ private:
 public:
     std::vector<std::string>* get_vars_from_fun(int function_value);
 
+    void add_line(std::string new_vars, int value);
+
     void add_fun_value(int value) { this->fun_values.push_back(value); };
     void add_variables(std::string new_vars) { this->variables.push_back(new_vars); };
+
+    void print_function();
 };
