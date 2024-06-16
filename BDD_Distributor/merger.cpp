@@ -29,6 +29,7 @@ void merger::merge_pla() {
     //sorting modules
     std::sort(this->modules->begin(), this->modules->end(), [](module* a, module* b) { return a->get_priority() > b->get_priority(); });
 
+    //loading pla files
     for (int i = 0; i < this->modules->size(); i++) {
         module* mod = this->modules->at(i);
         auto input_file = std::ifstream(mod->get_path());
@@ -59,15 +60,7 @@ void merger::merge_pla() {
             int value = std::stoi(line.substr(var_count + 1));
 
             mod_fun->add_line(variables, value);
-
-
             output_file << line << "\n";
-
-
-
-
-
-
         }
 
         std::cout << mod->get_name() << std::endl;
@@ -76,6 +69,9 @@ void merger::merge_pla() {
     }
 
 
+    for (int i = 0; i < this->modules->size(); i++) {
+        
+    }
 
     output_file.close();
 
