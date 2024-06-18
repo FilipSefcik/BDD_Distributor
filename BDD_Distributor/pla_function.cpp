@@ -58,6 +58,7 @@ std::vector<std::vector<std::string>*>* pla_function::sort_by_position(int posit
         for (int j = 0; j < this->variables->size(); j++) {
             if (this->variables->at(j)[position] - '0' == i) {
                 new_function->push_back(this->variables->at(j));
+                continue;
             }
             if (this->variables->at(j)[position] == '-') {
                 whatever_lines->push_back(this->variables->at(j));
@@ -69,15 +70,62 @@ std::vector<std::vector<std::string>*>* pla_function::sort_by_position(int posit
     return sorted;
 }
 
-void pla_function::input_variables(std::vector<std::string> *additional_vars, int position, int function) {
+void pla_function::input_variables(std::vector<std::vector<std::string>*>* additional_vars, int position, int function) {
     std::vector<std::string>* new_vars = new std::vector<std::string>();
     std::vector<int>* new_fun_vals = new std::vector<int>();
 
-    for (int i = 0; this->variables->size(); i++) {
-        std::string line = this->variables->at(i);
-        if (line[position] - '0' != function) { continue; }
-        for (int j = 0; additional_vars->size(); j++) {
+    std::vector<std::vector<std::string>*>* my_vars = this->sort_by_position(position);
+    std::string temp_line, input_line;
+    int var_count = additional_vars->at(0)->at(0).length();
+    int fun_value;
+    std::string whatever_input = std::string(var_count, '-');
 
+    for (int i = 0; i < my_vars->size(); i++) {
+        if (i == my_vars->size() - 1) {
+            for (int l = 0; l < my_vars->at(i)->size(); l++) {
+                temp_line = my_vars->at(i)->at(l);
+                fun_value = this->get_fun_value(temp_line);
+
+                temp_line.replace(position, var_count, whatever_input);
+
+                new_vars->push_back(temp_line);
+                new_fun_vals->push_back(fun_value);
+            }
+            continue;
+        }
+        for (int j = 0; j < my_vars->at(i)->size(); j++) {
+            temp_line = my_vars->at(i)->at(j);
+            fun_value = this->get_fun_value(temp_line);
+
+            for (int k = 0; k < additional_vars->size(); k++) {
+                temp_line = my_vars->at(i)->at(j);
+                input_line = additional_vars->at(i)->at(k);
+
+                temp_line.replace(position, var_count, input_line);
+
+                new_vars->push_back(temp_line);
+                new_fun_vals->push_back(fun_value);
+            }
         }
     }
+    
+    this->variables = new_vars;
+    this->fun_values = new_fun_vals;
+
+}
+
+int pla_function::get_fun_value(std::string indexed_variables) {
+     // Find the iterator to the element
+    auto it = std::find(this->variables->begin(), this->variables->end(), indexed_variables);
+
+    int value = 0;
+    
+    // Check if the element was found
+    if (it != this->variables->end()) {
+        // Calculate the index
+        int index = std::distance(this->variables->begin(), it);
+        value = this->fun_values->at(index);
+    }
+
+    return value;
 }
