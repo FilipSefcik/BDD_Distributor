@@ -52,9 +52,9 @@ public:
 
 	    this->module_manager_.load(this->conf_path);
 
-        // merger merger;
-        // merger.set_modules(this->module_manager_.get_modules());
-        // merger.merge_pla();
+        merger merger;
+        merger.set_modules(this->module_manager_.get_modules());
+        merger.merge_pla();
 
 	    this->divider_->divide_modules(this->module_manager_.get_modules(), this->assigned_modules, &this->assigned_modules_count);  
 
