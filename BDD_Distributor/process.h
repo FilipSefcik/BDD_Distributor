@@ -18,8 +18,8 @@ public:
     process(int rank) : my_rank(rank) {};
     virtual void process_information() = 0;
     void process_instructions(int state) {
-        // this->mpi_manager_.write_to_pla();
-        // this->mpi_manager_.complete_instructions(this->my_instructions, state);
+        this->mpi_manager_.write_to_pla();
+        this->mpi_manager_.complete_instructions(this->my_instructions, state);
     };
 };
 
@@ -52,19 +52,19 @@ public:
 
 	    this->module_manager_.load(this->conf_path);
 
-        merger merger;
-        merger.set_modules(this->module_manager_.get_modules());
-        merger.merge_pla();
+        // merger merger;
+        // merger.set_modules(this->module_manager_.get_modules());
+        // merger.merge_pla();
 
-	    // this->divider_->divide_modules(this->module_manager_.get_modules(), this->assigned_modules, &this->assigned_modules_count);  
+	    this->divider_->divide_modules(this->module_manager_.get_modules(), this->assigned_modules, &this->assigned_modules_count);  
 
-        // mpi_communicator::scatter_ints(this->assigned_modules_count.data(), &this->assigned_count);
+        mpi_communicator::scatter_ints(this->assigned_modules_count.data(), &this->assigned_count);
 
-        // this->get_used_processes_count();
+        this->get_used_processes_count();
 
-        // this->module_manager_.get_instructions(used_count);
+        this->module_manager_.get_instructions(used_count);
 
-        // this->distribute_modules();
+        this->distribute_modules();
     }
 
     void get_used_processes_count() {
@@ -119,10 +119,10 @@ public:
     * @brief recieves modules with instructions from main_process
     */
     void process_information() override {
-        // mpi_communicator::scatter_ints(nullptr, &this->assigned_count);
+        mpi_communicator::scatter_ints(nullptr, &this->assigned_count);
 
-        // if (this->assigned_count > 0) {
-        //     this->mpi_manager_.recieve_my_modules(this->assigned_count, this->my_rank, this->my_instructions);
-        // }
+        if (this->assigned_count > 0) {
+            this->mpi_manager_.recieve_my_modules(this->assigned_count, this->my_rank, this->my_instructions);
+        }
     }
 };
