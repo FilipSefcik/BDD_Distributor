@@ -27,7 +27,7 @@ void merger::merge_pla() {
     //testing file end
 
     //sorting modules
-    std::sort(this->modules->begin(), this->modules->end(), [](module* a, module* b) { return a->get_priority() > b->get_priority(); });
+    std::sort(this->modules->begin(), this->modules->end(), [](module* a, module* b) { return a->get_priority() < b->get_priority(); });
 
     //loading pla files
     for (int i = 0; i < this->modules->size(); i++) {
@@ -69,9 +69,18 @@ void merger::merge_pla() {
     }
 
 
-    for (int i = 0; i < this->modules->size(); i++) {
-        
+    for (int i = 0; i < this->modules->size() - 1; i++) {
+        module* son = this->modules->at(i);
+        std::cout << "son: " << son->get_name() << std::endl;
+        pla_function* sons_fun = son->get_pla_function();
+        std::cout << "parent: " << son->get_parent()->get_name() << std::endl;
+        pla_function* parent_fun = this->modules->at(i)->get_parent()->get_pla_function();
+        std::cout << "position: " << son->get_position() << std::endl;
+        parent_fun->input_variables(sons_fun->sort_by_function(), son->get_position(), 0);
     }
+
+    std::cout << this->modules->at(this->modules->size() - 1)->get_name() << std::endl;
+    this->modules->at(this->modules->size() - 1)->get_pla_function()->print_function();
 
     output_file.close();
 

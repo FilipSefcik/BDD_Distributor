@@ -1,4 +1,5 @@
 #include "pla_function.h"
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -40,9 +41,12 @@ std::vector<std::vector<std::string>*>* pla_function::sort_by_function() {
     std::vector<std::vector<std::string>*>* sorted = new std::vector<std::vector<std::string>*>();
     for (int i = 0; i < 2; i++) {
         std::vector<std::string>* new_function = new std::vector<std::string>();
+        std::cout << "Loop: " << i << std::endl;
         for (int j = 0; j < this->fun_values->size(); j++) {
             if (this->fun_values->at(j) == i) {
                 new_function->push_back(this->variables->at(j));
+                std::cout << "Line: ";
+                std::cout << this->variables->at(j) << std::endl;
             }
         }
         sorted->push_back(new_function);
@@ -56,12 +60,12 @@ std::vector<std::vector<std::string>*>* pla_function::sort_by_position(int posit
     for (int i = 0; i < 2; i++) {
         std::vector<std::string>* new_function = new std::vector<std::string>();
         for (int j = 0; j < this->variables->size(); j++) {
+            std::cout << this->variables->at(j) << std::endl;
+            if (this->variables->at(j)[position] == '-' && i == 0) {
+                whatever_lines->push_back(this->variables->at(j));
+            }
             if (this->variables->at(j)[position] - '0' == i) {
                 new_function->push_back(this->variables->at(j));
-                continue;
-            }
-            if (this->variables->at(j)[position] == '-') {
-                whatever_lines->push_back(this->variables->at(j));
             }
         }
         sorted->push_back(new_function);
@@ -81,30 +85,37 @@ void pla_function::input_variables(std::vector<std::vector<std::string>*>* addit
     std::string whatever_input = std::string(var_count, '-');
 
     for (int i = 0; i < my_vars->size(); i++) {
+        std::cout << "Position: " << i << std::endl;
+        std::cout << "Number of loops: " << my_vars->at(i)->size() << std::endl;
         if (i == my_vars->size() - 1) {
             for (int l = 0; l < my_vars->at(i)->size(); l++) {
+                
                 temp_line = my_vars->at(i)->at(l);
                 fun_value = this->get_fun_value(temp_line);
 
-                temp_line.replace(position, var_count, whatever_input);
+
+                temp_line = this->replace_char(temp_line, position, whatever_input);
 
                 new_vars->push_back(temp_line);
                 new_fun_vals->push_back(fun_value);
+                std::cout << temp_line << " " << fun_value << std::endl;
             }
             continue;
         }
         for (int j = 0; j < my_vars->at(i)->size(); j++) {
             temp_line = my_vars->at(i)->at(j);
             fun_value = this->get_fun_value(temp_line);
-
-            for (int k = 0; k < additional_vars->size(); k++) {
+            std::cout << "Additional:" << additional_vars->at(i)->size() << std::endl;
+            for (int k = 0; k < additional_vars->at(i)->size(); k++) {
                 temp_line = my_vars->at(i)->at(j);
                 input_line = additional_vars->at(i)->at(k);
+                std::cout << input_line << std::endl;
 
-                temp_line.replace(position, var_count, input_line);
+                temp_line = this->replace_char(temp_line, position, input_line);
 
                 new_vars->push_back(temp_line);
                 new_fun_vals->push_back(fun_value);
+                std::cout << temp_line << " " << fun_value << std::endl;
             }
         }
     }
@@ -128,4 +139,10 @@ int pla_function::get_fun_value(std::string indexed_variables) {
     }
 
     return value;
+}
+
+std::string pla_function::replace_char(std::string before, int position, std::string input) {
+    std::string before_part = before.substr(0, position);
+    std::string after_part = before.substr(position + 1);
+    return before_part + input + after_part;
 }
