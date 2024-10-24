@@ -58,7 +58,7 @@ void module_manager::load_modules(std::string confPath) {
         path = line.substr(space_index + 1, pla_index + 3 - name.length());
         column = line.substr(pla_index + 5);
 
-        module* mod = new module(name);
+        module* mod = new module(name, 2);
         mod->set_path(path);
         mod->set_function_column(std::stoi(column));
 

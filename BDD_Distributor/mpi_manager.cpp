@@ -1,4 +1,5 @@
 #include "mpi_manager.h"
+#include <ostream>
 
 mpi_manager::~mpi_manager() {
     for (auto& pair : this->my_modules) { 
@@ -26,11 +27,18 @@ void mpi_manager::execute_module(std::string module_name, int module_position) {
         teddy::bss_manager bss_manager(mod->get_var_count(), mod->get_var_count() * 100);
         std::optional<teddy::pla_file> pla_file = teddy::pla_file::load_file(path);
         teddy::bss_manager::diagram_t f = bss_manager.from_pla(*pla_file, teddy::fold_type::Left)[mod->get_function_column()];
-        const double reliability = bss_manager.state_frequency(f, this->calculated_state);
+        //const double reliability = bss_manager.state_frequency(f, this->calculated_state);
 
-        // const double reliability = this->calculated_state == 1 ? 
-        //                             bss_manager.calculate_availability(1, *mod->get_sons_reliability(), f) :
-        //                             bss_manager.calculate_unavailability(1, *mod->get_sons_reliability(), f);
+        const double reliability = this->calculated_state == 1 ? 
+                                    bss_manager.calculate_availability(1, *mod->get_sons_reliability(), f) :
+                                    bss_manager.calculate_unavailability(1, *mod->get_sons_reliability(), f);
+        std::cout << mod->get_name() << std::endl;
+        for (int i = 0; i < mod->get_sons_reliability()->size(); i++) {
+            for (int j = 0; j < mod->get_sons_reliability()->at(i).size(); j++) {
+                std::cout << mod->get_sons_reliability()->at(i).at(j) << " ";
+            }
+            std::cout << std::endl;
+        }
 
         // std::cout << "avail 1 " << bss_manager.calculate_availability(1, *mod->get_sons_reliability(), f) << std::endl;
         // std::cout << "avail 0 " << bss_manager.calculate_availability(0, *mod->get_sons_reliability(), f) << std::endl;
@@ -129,7 +137,7 @@ void mpi_manager::send_module_info(module* mod, /*std::string instructions,*/ in
 }
 
 void mpi_manager::add_new_module(std::string name, std::string pla, int my_rank, int var_count, int function_column) {
-    module* temp = new module(name);
+    module* temp = new module(name, 2);
     temp->set_var_count(var_count);
     temp->set_function_column(function_column);
     temp->set_pla(pla);

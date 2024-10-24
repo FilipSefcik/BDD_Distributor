@@ -24,11 +24,13 @@ private:
 	int priority = 0; // number of modules between the furthest "child" module and this module
 	int var_count = 0;
 	int function_column = 0;
-	double my_reliability = 0.5;
+	double my_reliability;
 	std::unordered_map<std::string, int> sons_map;
 	pla_function* function;
+
+	int states;
 public:
-	module(std::string pa_name);
+	module(std::string pa_name, int pa_states);
 	~module(){ delete this->sons_reliability; delete this->function; };
 
 	// getters

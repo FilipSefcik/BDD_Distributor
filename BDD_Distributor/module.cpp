@@ -1,8 +1,11 @@
 #include "module.h"
 #include "pla_function.h"
+#include <vector>
 
-module::module(std::string pa_name) {
+module::module(std::string pa_name, int pa_states) {
     this->name = pa_name;
+    this->states = pa_states;
+    this->my_reliability = 1.0/this->states;
     this->sons_reliability = new std::vector<std::vector<double>>();
     this->function = new pla_function;
 }
@@ -35,7 +38,7 @@ void module::set_var_count(int pa_var_count) {
     this->var_count = pa_var_count;
     for (int i = 0; i < this->var_count; i++)
     {
-        this->sons_reliability->push_back({0.5, 0.5});
+        this->sons_reliability->push_back(std::vector<double>(this->states, 1.0/states));
     }
 }
 
