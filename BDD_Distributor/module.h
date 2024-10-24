@@ -29,7 +29,7 @@ private:
 	pla_function* function;
 public:
 	module(std::string pa_name);
-	~module(){ delete this->sons_reliability; };
+	~module(){ delete this->sons_reliability; delete this->function; };
 
 	// getters
 

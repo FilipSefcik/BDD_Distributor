@@ -26,10 +26,18 @@ void mpi_manager::execute_module(std::string module_name, int module_position) {
         teddy::bss_manager bss_manager(mod->get_var_count(), mod->get_var_count() * 100);
         std::optional<teddy::pla_file> pla_file = teddy::pla_file::load_file(path);
         teddy::bss_manager::diagram_t f = bss_manager.from_pla(*pla_file, teddy::fold_type::Left)[mod->get_function_column()];
+        const double reliability = bss_manager.state_frequency(f, this->calculated_state);
 
-        const double reliability = this->calculated_state == 1 ? 
-                                    bss_manager.calculate_availability(1, *mod->get_sons_reliability(), f) :
-                                    bss_manager.calculate_unavailability(1, *mod->get_sons_reliability(), f);
+        // const double reliability = this->calculated_state == 1 ? 
+        //                             bss_manager.calculate_availability(1, *mod->get_sons_reliability(), f) :
+        //                             bss_manager.calculate_unavailability(1, *mod->get_sons_reliability(), f);
+
+        // std::cout << "avail 1 " << bss_manager.calculate_availability(1, *mod->get_sons_reliability(), f) << std::endl;
+        // std::cout << "avail 0 " << bss_manager.calculate_availability(0, *mod->get_sons_reliability(), f) << std::endl;
+        // std::cout << "unavail 1 " << bss_manager.calculate_unavailability(1, *mod->get_sons_reliability(), f) << std::endl;
+        // std::cout << "unavail 0 " << bss_manager.calculate_unavailability(0, *mod->get_sons_reliability(), f) << std::endl;
+        // std::cout << "state 1 " << bss_manager.state_frequency(f, 1) << std::endl;
+        // std::cout << "state 0 " << bss_manager.state_frequency(f, 0) << std::endl;
 
         mod->set_reliability(reliability);
     } else {
@@ -100,19 +108,22 @@ void mpi_manager::recieve_my_modules(int pa_my_assigned_modules, int pa_my_rank,
 
         std::string module_name = mpi_communicator::recv_string(0);
         std::string module_pla = mpi_communicator::recv_string(0);
-        pa_my_instructions = mpi_communicator::recv_string(0);
+        //pa_my_instructions = mpi_communicator::recv_string(0);
+        //std::cout << pa_my_instructions << std::endl;
         int var_count = mpi_communicator::recv_int(0);
         int function_column = mpi_communicator::recv_int(0);
 
         this->add_new_module(module_name, module_pla, pa_my_rank, var_count, function_column);
                     
-     }
+    }
+    pa_my_instructions = mpi_communicator::recv_string(0);
+    std::cout << pa_my_instructions << std::endl;
 } 
 
-void mpi_manager::send_module_info(module* mod, std::string instructions, int recvRank) {
+void mpi_manager::send_module_info(module* mod, /*std::string instructions,*/ int recvRank) {
     mpi_communicator::send_string(mod->get_name(), recvRank);
     mpi_communicator::send_string(mod->get_pla(), recvRank);
-    mpi_communicator::send_string(instructions, recvRank);
+    //mpi_communicator::send_string(instructions, recvRank);
     mpi_communicator::send_int(mod->get_var_count(), recvRank);
     mpi_communicator::send_int(mod->get_function_column(), recvRank);
 }

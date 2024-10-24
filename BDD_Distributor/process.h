@@ -4,6 +4,7 @@
 #include "mpi_communicator.h"
 #include "mpi_manager.h"
 #include <cstddef>
+#include <math.h>
 #include "merger.h"
 
 /*
@@ -52,9 +53,9 @@ public:
 
 	    this->module_manager_.load(this->conf_path);
 
-        merger merger;
-        merger.set_modules(this->module_manager_.get_modules());
-        merger.merge_pla();
+        // merger merger;
+        // merger.set_modules(this->module_manager_.get_modules());
+        // merger.merge_pla();
 
 	    this->divider_->divide_modules(this->module_manager_.get_modules(), this->assigned_modules, &this->assigned_modules_count);  
 
@@ -86,11 +87,17 @@ public:
 
                 if (i == this->my_rank) {
                     this->mpi_manager_.add_new_module(mod->get_name(), mod->get_pla(), this->my_rank, mod->get_var_count(), mod->get_function_column());
-                    this->my_instructions = this->module_manager_.get_instructions_for_process(i);
+                    //this->my_instructions = this->module_manager_.get_instructions_for_process(i);
                     continue;
                 }
 
-                this->mpi_manager_.send_module_info(mod, this->module_manager_.get_instructions_for_process(i), i);
+                this->mpi_manager_.send_module_info(mod, /*this->module_manager_.get_instructions_for_process(i),*/ i);
+            }
+            
+            if (i == 0) {
+                this->my_instructions = this->module_manager_.get_instructions_for_process(i);
+            } else {
+                mpi_communicator::send_string(this->module_manager_.get_instructions_for_process(i), i);
             }
         }
     }

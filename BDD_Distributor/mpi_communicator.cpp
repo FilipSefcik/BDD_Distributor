@@ -28,9 +28,10 @@ void mpi_communicator::send_string(std::string message, int recievers_rank) {
 
 std::string mpi_communicator::recv_string(int sender_rank) {
     int size;
-    char* message;
+    //char* message;
     MPI_Recv(&size, 1, MPI_INT, sender_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    message = (char*)malloc(sizeof(char)*size);
+    //message = (char*)malloc(sizeof(char)*size);
+    char message[size];
     MPI_Recv(message, size, MPI_CHAR, sender_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     return message;
 }
