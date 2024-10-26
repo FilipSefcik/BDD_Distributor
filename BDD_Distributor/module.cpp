@@ -44,6 +44,7 @@ void module::set_var_count(int pa_var_count) {
 
 void module::set_sons_reliability(int sonPosition, double sonRel, int state) {
     if (sonPosition >= 0 && sonPosition < this->sons_reliability->size()) {
+        std::cout << sonRel << std::endl;
         this->sons_reliability->at(sonPosition).at(state) = sonRel;
         this->sons_reliability->at(sonPosition).at((state + 1) % 2) = 1.0 - sonRel;
     }

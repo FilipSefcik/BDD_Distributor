@@ -27,11 +27,11 @@ void mpi_manager::execute_module(std::string module_name, int module_position) {
         teddy::bss_manager bss_manager(mod->get_var_count(), mod->get_var_count() * 100);
         std::optional<teddy::pla_file> pla_file = teddy::pla_file::load_file(path);
         teddy::bss_manager::diagram_t f = bss_manager.from_pla(*pla_file, teddy::fold_type::Left)[mod->get_function_column()];
-        //const double reliability = bss_manager.state_frequency(f, this->calculated_state);
+        const double reliability = bss_manager.calculate_probability(this->calculated_state ,*mod->get_sons_reliability(), f);
 
-        const double reliability = this->calculated_state == 1 ? 
-                                    bss_manager.calculate_availability(1, *mod->get_sons_reliability(), f) :
-                                    bss_manager.calculate_unavailability(1, *mod->get_sons_reliability(), f);
+        // const double reliability = this->calculated_state == 1 ? 
+        //                             bss_manager.calculate_availability(1, *mod->get_sons_reliability(), f) :
+        //                             bss_manager.calculate_unavailability(1, *mod->get_sons_reliability(), f);
         std::cout << mod->get_name() << std::endl;
         for (int i = 0; i < mod->get_sons_reliability()->size(); i++) {
             for (int j = 0; j < mod->get_sons_reliability()->at(i).size(); j++) {
@@ -46,6 +46,9 @@ void mpi_manager::execute_module(std::string module_name, int module_position) {
         // std::cout << "unavail 0 " << bss_manager.calculate_unavailability(0, *mod->get_sons_reliability(), f) << std::endl;
         // std::cout << "state 1 " << bss_manager.state_frequency(f, 1) << std::endl;
         // std::cout << "state 0 " << bss_manager.state_frequency(f, 0) << std::endl;
+        std::cout << "prob 1 " << bss_manager.calculate_probability(1,*mod->get_sons_reliability(), f) << std::endl;
+        std::cout << "prob 0 " << bss_manager.calculate_probability(0,*mod->get_sons_reliability(), f) << std::endl;
+
 
         mod->set_reliability(reliability);
     } else {
