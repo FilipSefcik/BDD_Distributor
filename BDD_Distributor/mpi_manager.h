@@ -1,20 +1,20 @@
 #pragma once
-#include <cstdint>
 #include "module.h"
 #include "mpi_communicator.h"
+#include <cstdint>
 #include <libteddy/details/diagram_manager.hpp>
 #include <libteddy/reliability.hpp>
 
 /*
-* @brief completes instructions from class mpi_manager and communicates using mpi_communicator
-*/
+ * @brief completes instructions from class mpi_manager and communicates using mpi_communicator
+ */
 class mpi_manager {
-private:
+  private:
     std::unordered_map<std::string, module*> my_modules;
     std::string pla_path = "MOD_PLA/";
     int calculated_state = 1;
 
-public:
+  public:
     ~mpi_manager();
 
     // instructions as functions
@@ -26,13 +26,15 @@ public:
     void send_module(std::string module_name, int recievers_rank);
     void recv_module(std::string parent_name, int sender);
 
-    // communicating with modules 
+    // communicating with modules
 
-    void recieve_my_modules(int pa_my_assigned_modules, int pa_my_rank, std::string& pa_my_instructions);
-    void add_new_module(std::string name, std::string pla, int my_rank, int var_count, int function_column);
+    void recieve_my_modules(int pa_my_assigned_modules, int pa_my_rank,
+                            std::string& pa_my_instructions);
+    void add_new_module(std::string name, std::string pla, int my_rank, int var_count,
+                        int function_column);
     void send_module_info(module* mod, /*std::string instructions,*/ int recievers_rank);
 
-    //processing modules
+    // processing modules
 
     void write_to_pla();
 

@@ -21,3 +21,5 @@ find_package(MPI REQUIRED)
 target_link_libraries(
     bdd_parallel PUBLIC MPI::MPI_CXX
 )
+
+target_compile_options(bdd_parallel PRIVATE "-Wall" "-Wextra" "-Wpedantic")

@@ -1,13 +1,12 @@
 #pragma once
-#include <string>
 #include <mpi.h>
+#include <string>
 
 /*
-* @brief mpi_communicator simplifies usage of MPI message functions
-*/
-class mpi_communicator
-{
-public:
+ * @brief mpi_communicator simplifies usage of MPI message functions
+ */
+class mpi_communicator {
+  public:
     static void send_int(int message, int recvievers_rank);
     static int recv_int(int sender_rank);
 

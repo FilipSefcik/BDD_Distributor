@@ -5,8 +5,7 @@ module_manager::~module_manager() {
         delete this->modules.at(i);
     }
 
-    for (int i = 0; i < this->separate_instructions.size(); i++)
-    {
+    for (int i = 0; i < this->separate_instructions.size(); i++) {
         delete this->separate_instructions.at(i);
     }
 
@@ -14,7 +13,8 @@ module_manager::~module_manager() {
     this->separate_instructions.clear();
 }
 
-void module_manager::load(std::string confPath) {
+void
+module_manager::load(std::string confPath) {
     try {
         this->load_modules(confPath);
         this->load_pla();
@@ -24,16 +24,15 @@ void module_manager::load(std::string confPath) {
     }
 }
 
-void module_manager::load_modules(std::string confPath) {
-    auto constexpr is_space = [](auto const character)
-        {
-            return static_cast<bool>(std::isspace(character));
-        };
+void
+module_manager::load_modules(std::string confPath) {
+    auto constexpr is_space = [](auto const character) {
+        return static_cast<bool>(std::isspace(character));
+    };
 
     auto file = std::ifstream(confPath);
 
-    if (not file.is_open())
-    {
+    if (not file.is_open()) {
         throw std::runtime_error("Error opening conf file");
         return;
     }
@@ -41,8 +40,7 @@ void module_manager::load_modules(std::string confPath) {
     // Read paths to modules and create all modules
     std::string name, path, column, line;
 
-    while (std::getline(file, line))
-    {
+    while (std::getline(file, line)) {
         if (line[0] == '#' || line.empty()) {
             continue;
         }
@@ -67,13 +65,10 @@ void module_manager::load_modules(std::string confPath) {
     }
 
     // Read mapping and connect modules between each other
-    do
-    {
-        auto const first
-            = std::find_if_not(std::begin(line), std::end(line), is_space);
+    do {
+        auto const first = std::find_if_not(std::begin(line), std::end(line), is_space);
         auto const last = std::end(line);
-        if (first == last || *first == '#')
-        {
+        if (first == last || *first == '#') {
             // Skip empty line.
             continue;
         }
@@ -82,15 +77,12 @@ void module_manager::load_modules(std::string confPath) {
         // val == mapping of modules and variables for this module
 
         auto const keyLast = std::find_if(first, last, is_space);
-        auto const valFirst = keyLast == last
-            ? last
-            : std::find_if_not(keyLast + 1, last, is_space);
+        auto const valFirst =
+            keyLast == last ? last : std::find_if_not(keyLast + 1, last, is_space);
         auto key = std::string(first, keyLast);
-        if (valFirst != last)
-        {
+        if (valFirst != last) {
             auto valLast = last;
-            while (is_space(*(valLast - 1)))
-            {
+            while (is_space(*(valLast - 1))) {
                 --valLast;
             }
             auto val = std::string(valFirst, valLast);
@@ -104,19 +96,20 @@ void module_manager::load_modules(std::string confPath) {
                     moduleName << 'M';
                     position = i - digits;
 
-                    for (size_t j = i + 1; j < val.size(); j++)
-                    {
-                        if (val[j] == 'V' || val[j] == 'M')
-                        {
+                    for (size_t j = i + 1; j < val.size(); j++) {
+                        if (val[j] == 'V' || val[j] == 'M') {
                             i = j - 1;
                             break;
                         }
                         moduleName << val[j];
                         digits++;
                     }
-                    this->modules.at(this->module_mapping.at(moduleName.str()))->set_position(position);
-                    this->modules.at(this->module_mapping.at(key))->add_son(this->modules.at(this->module_mapping.at(moduleName.str())));
-                    this->modules.at(this->module_mapping.at(key))->add_son_position(moduleName.str(), position);
+                    this->modules.at(this->module_mapping.at(moduleName.str()))
+                        ->set_position(position);
+                    this->modules.at(this->module_mapping.at(key))
+                        ->add_son(this->modules.at(this->module_mapping.at(moduleName.str())));
+                    this->modules.at(this->module_mapping.at(key))
+                        ->add_son_position(moduleName.str(), position);
                 }
             }
             this->modules.at(this->module_mapping.at(key))->set_var_count(val.size() - digits);
@@ -125,91 +118,98 @@ void module_manager::load_modules(std::string confPath) {
     } while (std::getline(file, line));
 }
 
-void module_manager::load_pla() {
-    if (this->modules.empty()) { return; }
+void
+module_manager::load_pla() {
+    if (this->modules.empty()) {
+        return;
+    }
 
-    for (module* mod : this->modules)
-    {
+    for (module* mod : this->modules) {
         auto file = std::ifstream(mod->get_path());
 
-        if (not file.is_open())
-        {   
+        if (not file.is_open()) {
             throw std::runtime_error("Error opening " + mod->get_name() + " PLA file");
             return;
         }
 
-        std::string file_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        std::string file_content((std::istreambuf_iterator<char>(file)),
+                                 std::istreambuf_iterator<char>());
         mod->set_pla(file_content);
-        
-        file.close();
 
+        file.close();
     }
 }
 
 /*
-* @brief creates instructions on how to process all modules
-* @param number of all processes
-*
-* Creates separate instructions for each preocess. 
-* Instructions consist of: Executing module, Sending moodule, Recieving module, Link modules, End of processing
-*/
-void module_manager::get_instructions(int process_count) {
-    this->separate_instructions.resize(process_count > this->modules.size() ?
-                                        this->modules.size() : process_count);
+ * @brief creates instructions on how to process all modules
+ * @param number of all processes
+ *
+ * Creates separate instructions for each preocess.
+ * Instructions consist of: Executing module, Sending moodule, Recieving module, Link modules, End
+ * of processing
+ */
+void
+module_manager::get_instructions(int process_count) {
+    this->separate_instructions.resize(process_count > this->modules.size() ? this->modules.size()
+                                                                            : process_count);
 
-    std::sort(this->modules.begin(), this->modules.end(), [](module* a, module* b) { return a->get_priority() < b->get_priority(); });
+    std::sort(this->modules.begin(), this->modules.end(),
+              [](module* a, module* b) { return a->get_priority() < b->get_priority(); });
 
-    for (int i = 0; i < this->modules.size(); i++)
-    {
+    for (int i = 0; i < this->modules.size(); i++) {
         module* mod = this->modules.at(i);
         module* parent = mod->get_parent();
-        if (!this->separate_instructions.at(mod->get_process_rank()))
-        {
+        if (! this->separate_instructions.at(mod->get_process_rank())) {
             this->separate_instructions.at(mod->get_process_rank()) = new std::stringstream;
         }
 
         // EXEC - module name - position of the module in parent
-        *this->separate_instructions.at(mod->get_process_rank()) << "EXEC " << mod->get_name() << " " << mod->get_position() << "\n";
-        if (parent)
-        {
-            if (!this->separate_instructions.at(parent->get_process_rank()))
-            {
+        *this->separate_instructions.at(mod->get_process_rank())
+            << "EXEC " << mod->get_name() << " " << mod->get_position() << "\n";
+        if (parent) {
+            if (! this->separate_instructions.at(parent->get_process_rank())) {
                 this->separate_instructions.at(parent->get_process_rank()) = new std::stringstream;
             }
 
-            if (mod->get_process_rank() == parent->get_process_rank()) { 
+            if (mod->get_process_rank() == parent->get_process_rank()) {
                 // LINK - name of parent module - name of son module
-                *this->separate_instructions.at(mod->get_process_rank()) << "LINK " << parent->get_name() << " " << mod->get_name() << "\n";               
+                *this->separate_instructions.at(mod->get_process_rank())
+                    << "LINK " << parent->get_name() << " " << mod->get_name() << "\n";
             } else {
                 // SEND - name of module - rank of the process to send
-                *this->separate_instructions.at(mod->get_process_rank()) << "SEND " << mod->get_name() << " " << parent->get_process_rank() << "\n";
-            
+                *this->separate_instructions.at(mod->get_process_rank())
+                    << "SEND " << mod->get_name() << " " << parent->get_process_rank() << "\n";
+
                 // RECV - parent module name - rank of the process recieved from
-                *this->separate_instructions.at(parent->get_process_rank()) << "RECV " << parent->get_name() << " " << mod->get_process_rank() << "\n";
+                *this->separate_instructions.at(parent->get_process_rank())
+                    << "RECV " << parent->get_name() << " " << mod->get_process_rank() << "\n";
             }
-        }
-        else
-        {
+        } else {
             // END - module which gives answer
-            *this->separate_instructions.at(mod->get_process_rank()) << "END " << mod->get_name() << "\n";
+            *this->separate_instructions.at(mod->get_process_rank())
+                << "END " << mod->get_name() << "\n";
         }
     }
 }
 
 /*
-* @brief returns instructions assigned to process from parameter
-* @param rank of prcess we want instructions for
-* @return instructions as a string
-*/
-std::string module_manager::get_instructions_for_process(int process_rank) {
+ * @brief returns instructions assigned to process from parameter
+ * @param rank of prcess we want instructions for
+ * @return instructions as a string
+ */
+std::string
+module_manager::get_instructions_for_process(int process_rank) {
     if (process_rank >= 0 && process_rank < this->separate_instructions.size()) {
         return this->separate_instructions.at(process_rank)->str();
     }
     return "INVALID RANK";
 }
 
-void module_manager::print_modules() {
-    if (this->modules.empty()) { return; }
+void
+module_manager::print_modules() {
+    if (this->modules.empty()) {
+        return;
+    }
 
     for (module* mod : this->modules) {
         std::cout << mod->get_name() << " " << mod->get_path() << "\n";
@@ -219,29 +219,30 @@ void module_manager::print_modules() {
     }
 }
 
-void module_manager::print_assigned_processes() {
-    if (this->modules.empty()) { return; }
+void
+module_manager::print_assigned_processes() {
+    if (this->modules.empty()) {
+        return;
+    }
 
-    for (module* mod : this->modules)
-    {
+    for (module* mod : this->modules) {
         std::cout << mod->get_name() << " " << mod->get_process_rank() << "\n";
     }
 }
 
-void module_manager::print_separate_instructions() {
-    for (int i = 0; i < this->separate_instructions.size(); i++)
-    {
+void
+module_manager::print_separate_instructions() {
+    for (int i = 0; i < this->separate_instructions.size(); i++) {
         std::cout << "Node " << i << " instructions:\n";
         std::cout << this->separate_instructions.at(i)->str() << "\n";
     }
 }
 
-void module_manager::print_module_pla() {
-    for (module* mod : this->modules)
-    {
+void
+module_manager::print_module_pla() {
+    for (module* mod : this->modules) {
         std::cout << mod->get_name() << std::endl;
         mod->print_pla();
         std::cout << std::endl;
     }
 }
-

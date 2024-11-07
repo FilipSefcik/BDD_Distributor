@@ -20,25 +20,29 @@ bdd_distributor::bdd_distributor() {
 
 bdd_distributor::~bdd_distributor() {
     delete this->process_;
-    //Finalize the MPI environment.
+    // Finalize the MPI environment.
     MPI_Finalize();
 }
 
-void bdd_distributor::set_conf_path(std::string pa_conf_path) {
+void
+bdd_distributor::set_conf_path(std::string pa_conf_path) {
     if (this->my_rank == 0 && this->process_) {
         main_process* mainProcess = dynamic_cast<main_process*>(this->process_);
         mainProcess->set_conf_path(pa_conf_path);
     }
 }
 
-void bdd_distributor::calculate_availability(int divider_flag, int state, bool timer_on) {
+void
+bdd_distributor::calculate_availability(int divider_flag, int state, bool timer_on) {
     if (state != 0 && state != 1) {
         std::cerr << "Invalid state" << std::endl;
         exit(2);
         return;
     }
 
-    if (timer_on) { this->start_time = MPI_Wtime(); }
+    if (timer_on) {
+        this->start_time = MPI_Wtime();
+    }
 
     if (this->my_rank == 0 && this->process_) {
         main_process* mainProcess = dynamic_cast<main_process*>(this->process_);
@@ -47,16 +51,19 @@ void bdd_distributor::calculate_availability(int divider_flag, int state, bool t
     this->process_->process_information();
     this->process_->process_instructions(state);
 
-    if (timer_on) { this->end_time = MPI_Wtime(); }
+    if (timer_on) {
+        this->end_time = MPI_Wtime();
+    }
 }
 
-void bdd_distributor::get_max_time() {
+void
+bdd_distributor::get_max_time() {
     double min_start, max_end;
 
     std::vector<double> start_times, end_times;
     start_times.resize(this->process_count);
     end_times.resize(this->process_count);
-    
+
     mpi_communicator::gather_doubles(&this->start_time, start_times.data());
     mpi_communicator::gather_doubles(&this->end_time, end_times.data());
 
@@ -69,5 +76,5 @@ void bdd_distributor::get_max_time() {
         }
 
         std::cout << "Time: " << max_end - min_start << std::endl;
-    } 
+    }
 }

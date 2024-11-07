@@ -1,15 +1,16 @@
 #include "merger.h"
 #include "pla_function.h"
 
-void merger::merge_pla() {
+void
+merger::merge_pla() {
     std::string path = "Merging/big_pla1.pla";
 
-    //testing file start
+    // testing file start
 
     std::filesystem::path dir_path = std::filesystem::path(path).parent_path();
 
-    if (!std::filesystem::exists(dir_path)) {
-        if (!std::filesystem::create_directories(dir_path)) {
+    if (! std::filesystem::exists(dir_path)) {
+        if (! std::filesystem::create_directories(dir_path)) {
             std::cerr << "Error creating directories!" << std::endl;
             exit(4);
             return; // Return an error code
@@ -18,24 +19,24 @@ void merger::merge_pla() {
 
     std::ofstream output_file(path);
 
-    if (!output_file.is_open()) {
+    if (! output_file.is_open()) {
         std::cerr << "Error opening the file!" << std::endl;
         exit(4);
-        return; 
+        return;
     }
 
-    //testing file end
+    // testing file end
 
-    //sorting modules
-    std::sort(this->modules->begin(), this->modules->end(), [](module* a, module* b) { return a->get_priority() < b->get_priority(); });
+    // sorting modules
+    std::sort(this->modules->begin(), this->modules->end(),
+              [](module* a, module* b) { return a->get_priority() < b->get_priority(); });
 
-    //loading pla files
+    // loading pla files
     for (int i = 0; i < this->modules->size(); i++) {
         module* mod = this->modules->at(i);
         auto input_file = std::ifstream(mod->get_path());
 
-        if (not input_file.is_open())
-        {
+        if (not input_file.is_open()) {
             throw std::runtime_error("Error opening " + mod->get_name() + " PLA file");
             return;
         }
@@ -46,8 +47,7 @@ void merger::merge_pla() {
         int var_count;
         pla_function* mod_fun = mod->get_pla_function();
 
-        while (std::getline(input_file, line))
-        {   
+        while (std::getline(input_file, line)) {
             char first = line[0];
             if (first == '.' || first == '#' || line.empty()) {
                 if (line[1] == 'i') {
@@ -65,9 +65,7 @@ void merger::merge_pla() {
 
         std::cout << mod->get_name() << std::endl;
         mod_fun->print_function();
-
     }
-
 
     for (int i = 0; i < this->modules->size() - 1; i++) {
         module* son = this->modules->at(i);
@@ -80,6 +78,4 @@ void merger::merge_pla() {
     this->modules->at(this->modules->size() - 1)->get_pla_function()->print_function();
 
     output_file.close();
-
-
 }
