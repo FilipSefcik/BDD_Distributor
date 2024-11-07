@@ -13,8 +13,7 @@ module_manager::~module_manager() {
     this->separate_instructions.clear();
 }
 
-void
-module_manager::load(std::string confPath) {
+void module_manager::load(std::string confPath) {
     try {
         this->load_modules(confPath);
         this->load_pla();
@@ -24,8 +23,7 @@ module_manager::load(std::string confPath) {
     }
 }
 
-void
-module_manager::load_modules(std::string confPath) {
+void module_manager::load_modules(std::string confPath) {
     auto constexpr is_space = [](auto const character) {
         return static_cast<bool>(std::isspace(character));
     };
@@ -118,8 +116,7 @@ module_manager::load_modules(std::string confPath) {
     } while (std::getline(file, line));
 }
 
-void
-module_manager::load_pla() {
+void module_manager::load_pla() {
     if (this->modules.empty()) {
         return;
     }
@@ -148,8 +145,7 @@ module_manager::load_pla() {
  * Instructions consist of: Executing module, Sending moodule, Recieving module, Link modules, End
  * of processing
  */
-void
-module_manager::get_instructions(int process_count) {
+void module_manager::get_instructions(int process_count) {
     this->separate_instructions.resize(process_count > this->modules.size() ? this->modules.size()
                                                                             : process_count);
 
@@ -197,16 +193,14 @@ module_manager::get_instructions(int process_count) {
  * @param rank of prcess we want instructions for
  * @return instructions as a string
  */
-std::string
-module_manager::get_instructions_for_process(int process_rank) {
+std::string module_manager::get_instructions_for_process(int process_rank) {
     if (process_rank >= 0 && process_rank < this->separate_instructions.size()) {
         return this->separate_instructions.at(process_rank)->str();
     }
     return "INVALID RANK";
 }
 
-void
-module_manager::print_modules() {
+void module_manager::print_modules() {
     if (this->modules.empty()) {
         return;
     }
@@ -219,8 +213,7 @@ module_manager::print_modules() {
     }
 }
 
-void
-module_manager::print_assigned_processes() {
+void module_manager::print_assigned_processes() {
     if (this->modules.empty()) {
         return;
     }
@@ -230,16 +223,14 @@ module_manager::print_assigned_processes() {
     }
 }
 
-void
-module_manager::print_separate_instructions() {
+void module_manager::print_separate_instructions() {
     for (int i = 0; i < this->separate_instructions.size(); i++) {
         std::cout << "Node " << i << " instructions:\n";
         std::cout << this->separate_instructions.at(i)->str() << "\n";
     }
 }
 
-void
-module_manager::print_module_pla() {
+void module_manager::print_module_pla() {
     for (module* mod : this->modules) {
         std::cout << mod->get_name() << std::endl;
         mod->print_pla();

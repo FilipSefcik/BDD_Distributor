@@ -1,8 +1,7 @@
 #include "merger.h"
 #include "pla_function.h"
 
-void
-merger::merge_pla() {
+void merger::merge_pla() {
     std::string path = "Merging/big_pla1.pla";
 
     // testing file start

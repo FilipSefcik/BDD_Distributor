@@ -7,7 +7,7 @@ IndentWidth: 4
 SortIncludes: true
 PointerAlignment: Left
 AllowShortFunctionsOnASingleLine: Inline
-AlwaysBreakAfterReturnType: TopLevel
+AlwaysBreakAfterReturnType: None
 ReflowComments: true
 SpaceAfterLogicalNot: true
 SpaceBeforeParens: ControlStatements

@@ -9,8 +9,7 @@ mpi_manager::~mpi_manager() {
     my_modules.clear();
 }
 
-void
-mpi_manager::evaluate(std::string module_name) {
+void mpi_manager::evaluate(std::string module_name) {
     module* mod = this->my_modules.at(module_name);
     if (mod) {
         std::cout << "Density of " << this->calculated_state << ": " << mod->get_reliability()
@@ -20,8 +19,7 @@ mpi_manager::evaluate(std::string module_name) {
     }
 }
 
-void
-mpi_manager::execute_module(std::string module_name, int module_position) {
+void mpi_manager::execute_module(std::string module_name, int module_position) {
     module* mod = this->my_modules.at(module_name);
     if (mod) {
         mod->set_position(module_position);
@@ -68,8 +66,7 @@ mpi_manager::execute_module(std::string module_name, int module_position) {
     }
 }
 
-void
-mpi_manager::link_modules(std::string parent_name, std::string son_name) {
+void mpi_manager::link_modules(std::string parent_name, std::string son_name) {
     module* parent = this->my_modules.at(parent_name);
     module* son = this->my_modules.at(son_name);
     if (parent && son) {
@@ -80,8 +77,7 @@ mpi_manager::link_modules(std::string parent_name, std::string son_name) {
     }
 }
 
-void
-mpi_manager::send_module(std::string module_name, int recievers_rank) {
+void mpi_manager::send_module(std::string module_name, int recievers_rank) {
     module* mod = this->my_modules.at(module_name);
     if (mod) {
         mpi_communicator::send_int(mod->get_position(), recievers_rank);
@@ -91,8 +87,7 @@ mpi_manager::send_module(std::string module_name, int recievers_rank) {
     }
 }
 
-void
-mpi_manager::recv_module(std::string parent_name, int sender) {
+void mpi_manager::recv_module(std::string parent_name, int sender) {
     module* parent = this->my_modules.at(parent_name);
     if (parent) {
         int son_position = mpi_communicator::recv_int(sender);
@@ -104,8 +99,7 @@ mpi_manager::recv_module(std::string parent_name, int sender) {
     }
 }
 
-void
-mpi_manager::complete_instructions(std::string instructions, int state) {
+void mpi_manager::complete_instructions(std::string instructions, int state) {
 
     this->calculated_state = state;
 
@@ -131,9 +125,8 @@ mpi_manager::complete_instructions(std::string instructions, int state) {
     }
 }
 
-void
-mpi_manager::recieve_my_modules(int pa_my_assigned_modules, int pa_my_rank,
-                                std::string& pa_my_instructions) {
+void mpi_manager::recieve_my_modules(int pa_my_assigned_modules, int pa_my_rank,
+                                     std::string& pa_my_instructions) {
     for (int i = 0; i < pa_my_assigned_modules; i++) {
 
         std::string module_name = mpi_communicator::recv_string(0);
@@ -149,8 +142,7 @@ mpi_manager::recieve_my_modules(int pa_my_assigned_modules, int pa_my_rank,
     std::cout << pa_my_instructions << std::endl;
 }
 
-void
-mpi_manager::send_module_info(module* mod, /*std::string instructions,*/ int recvRank) {
+void mpi_manager::send_module_info(module* mod, /*std::string instructions,*/ int recvRank) {
     mpi_communicator::send_string(mod->get_name(), recvRank);
     mpi_communicator::send_string(mod->get_pla(), recvRank);
     // mpi_communicator::send_string(instructions, recvRank);
@@ -158,9 +150,8 @@ mpi_manager::send_module_info(module* mod, /*std::string instructions,*/ int rec
     mpi_communicator::send_int(mod->get_function_column(), recvRank);
 }
 
-void
-mpi_manager::add_new_module(std::string name, std::string pla, int my_rank, int var_count,
-                            int function_column) {
+void mpi_manager::add_new_module(std::string name, std::string pla, int my_rank, int var_count,
+                                 int function_column) {
     module* temp = new module(name, 2);
     temp->set_var_count(var_count);
     temp->set_function_column(function_column);
@@ -169,15 +160,13 @@ mpi_manager::add_new_module(std::string name, std::string pla, int my_rank, int 
     this->my_modules.emplace(name, temp);
 }
 
-void
-mpi_manager::write_to_pla() {
+void mpi_manager::write_to_pla() {
     for (auto& pair : this->my_modules) {
         pair.second->write_pla_file();
     }
 }
 
-void
-mpi_manager::print_my_modules(int my_rank) {
+void mpi_manager::print_my_modules(int my_rank) {
     std::cout << my_rank << std::endl;
     for (auto pair : this->my_modules) {
         std::cout << pair.second->get_name() << std::endl;

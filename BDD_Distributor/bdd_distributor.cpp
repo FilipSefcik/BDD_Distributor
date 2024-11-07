@@ -24,16 +24,14 @@ bdd_distributor::~bdd_distributor() {
     MPI_Finalize();
 }
 
-void
-bdd_distributor::set_conf_path(std::string pa_conf_path) {
+void bdd_distributor::set_conf_path(std::string pa_conf_path) {
     if (this->my_rank == 0 && this->process_) {
         main_process* mainProcess = dynamic_cast<main_process*>(this->process_);
         mainProcess->set_conf_path(pa_conf_path);
     }
 }
 
-void
-bdd_distributor::calculate_availability(int divider_flag, int state, bool timer_on) {
+void bdd_distributor::calculate_availability(int divider_flag, int state, bool timer_on) {
     if (state != 0 && state != 1) {
         std::cerr << "Invalid state" << std::endl;
         exit(2);
@@ -56,8 +54,7 @@ bdd_distributor::calculate_availability(int divider_flag, int state, bool timer_
     }
 }
 
-void
-bdd_distributor::get_max_time() {
+void bdd_distributor::get_max_time() {
     double min_start, max_end;
 
     std::vector<double> start_times, end_times;

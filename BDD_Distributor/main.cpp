@@ -15,8 +15,7 @@
  * \5 - availability which state (0 or 1) should be calculated
  * \6 - usage of timer (y or n)
  */
-int
-main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
     std::string conf_path = argc > 1 ? argv[1] : "module_map.conf";
     int divider_flag = argc > 2 ? std::stoi(argv[2]) : 0;
     int state = argc > 3 ? std::stoi(argv[3]) : 1;
